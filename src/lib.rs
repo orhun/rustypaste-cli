@@ -9,12 +9,13 @@ pub mod args;
 pub mod config;
 /// Custom error implementation.
 pub mod error;
-/// Upload helper.
+/// Upload handler.
 pub mod upload;
 
 use crate::args::Args;
 use crate::config::Config;
 use crate::error::Result;
+use crate::upload::Uploader;
 use std::fs;
 use std::io::{self, Read};
 
@@ -33,16 +34,17 @@ pub fn run(mut args: Args) -> Result<()> {
     }
     config.update_from_args(&args);
 
+    let uploader = Uploader::new(&config.server);
     if args.files.contains(&String::from("-")) {
         let mut buffer = String::new();
         io::stdin().read_to_string(&mut buffer)?;
-        match upload::upload_stream(buffer.as_bytes(), &config.server) {
+        match uploader.upload_stream(buffer.as_bytes()) {
             Ok(url) => println!("stdin -> {}", url.trim()),
             Err(e) => eprintln!("stdin -> {}", e),
         }
     } else {
         for file in args.files {
-            match upload::upload_file(&file, &config.server) {
+            match uploader.upload_file(&file) {
                 Ok(url) => println!("{:?} -> {}", file, url.trim()),
                 Err(e) => eprintln!("{:?} -> {}", file, e),
             }
