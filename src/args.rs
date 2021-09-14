@@ -12,6 +12,8 @@ pub struct Args {
     pub server: Option<String>,
     /// Authentication token.
     pub auth: Option<String>,
+    /// URL to shorten.
+    pub url: Option<String>,
     /// Files to upload.
     pub files: Vec<String>,
 }
@@ -30,6 +32,7 @@ impl Args {
             "SERVER",
         );
         opts.optopt("a", "auth", "sets the authentication token", "TOKEN");
+        opts.optopt("u", "url", "sets the URL to shorten", "URL");
 
         let env_args: Vec<String> = env::args().collect();
         let matches = match opts.parse(&env_args[1..]) {
@@ -40,7 +43,7 @@ impl Args {
             }
         };
 
-        if matches.opt_present("h") || matches.free.is_empty() {
+        if matches.opt_present("h") || (matches.free.is_empty() && !matches.opt_present("u")) {
             let usage = format!(
                 "\n{} {} \u{2014} {}.\
                 \n\u{221F} written by {}\
@@ -66,6 +69,7 @@ impl Args {
             config: matches.opt_str("c").map(PathBuf::from),
             server: matches.opt_str("s"),
             auth: matches.opt_str("a"),
+            url: matches.opt_str("u"),
             files: matches.free,
         }
     }

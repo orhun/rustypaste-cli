@@ -35,7 +35,12 @@ pub fn run(mut args: Args) -> Result<()> {
     config.update_from_args(&args);
 
     let uploader = Uploader::new(&config.server);
-    if args.files.contains(&String::from("-")) {
+    if let Some(url) = args.url {
+        match uploader.upload_url(&url) {
+            Ok(short_url) => println!("{:?} -> {}", url, short_url.trim()),
+            Err(e) => eprintln!("{:?} -> {}", url, e),
+        }
+    } else if args.files.contains(&String::from("-")) {
         let mut buffer = String::new();
         io::stdin().read_to_string(&mut buffer)?;
         match uploader.upload_stream(buffer.as_bytes()) {

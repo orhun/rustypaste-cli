@@ -39,6 +39,14 @@ impl<'a> Uploader<'a> {
         self.upload(multipart)
     }
 
+    /// Uploads the given url (stream) to the server.
+    pub fn upload_url(&self, url: &str) -> Result<String> {
+        let mut multipart = Multipart::new();
+        multipart.add_stream::<_, &[u8], &str>("url", url.as_bytes(), None, None);
+
+        self.upload(multipart)
+    }
+
     /// Uploads a stream to the server.
     pub fn upload_stream<S: Read>(&self, stream: S) -> Result<String> {
         let mut multipart = Multipart::new();
