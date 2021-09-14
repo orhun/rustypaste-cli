@@ -16,9 +16,9 @@ pub struct Args {
     pub url: Option<String>,
     /// Files to upload.
     pub files: Vec<String>,
-    /// Whether if links will be generated as one shot.
+    /// Whether if the file will disappear after being viewed once.
     pub oneshot: bool,
-    /// Expiration time of the link.
+    /// Expiration time for the link.
     pub expire: Option<String>,
 }
 

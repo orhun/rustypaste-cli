@@ -24,7 +24,7 @@ pub struct ServerConfig {
 pub struct PasteConfig {
     /// Whether if the file will disappear after being viewed once.
     pub oneshot: Option<bool>,
-    /// Expiration time for the links.
+    /// Expiration time for the link.
     pub expire: Option<String>,
 }
 
