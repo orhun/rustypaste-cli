@@ -2,6 +2,7 @@ use crate::config::Config;
 use crate::error::{Error, Result};
 use multipart::client::lazy::Multipart;
 use std::io::Read;
+use ureq::Error as UreqError;
 use ureq::{Agent, AgentBuilder};
 
 /// Default file name to use for multipart stream.
@@ -84,9 +85,30 @@ impl<'a> Uploader<'a> {
         if let Some(expiration_time) = &self.config.paste.expire {
             request = request.set(EXPIRATION_HEADER, expiration_time);
         }
-        let response = request
-            .send(multipart_data)
-            .map_err(|e| Error::RequestError(Box::new(e)))?;
-        Ok(response.into_string()?)
+        match request.send(multipart_data) {
+            Ok(response) => {
+                let status = response.status();
+                let response_text = response.into_string()?;
+                if response_text.lines().count() != 1 {
+                    Err(Error::UploadError(format!(
+                        "server returned invalid body (status code: {})",
+                        status
+                    )))
+                } else if status == 200 {
+                    Ok(response_text)
+                } else {
+                    Err(Error::UploadError(format!(
+                        "unknown error (status code: {})",
+                        status
+                    )))
+                }
+            }
+            Err(UreqError::Status(code, response)) => Err(Error::UploadError(format!(
+                "{} (status code: {})",
+                response.into_string()?,
+                code
+            ))),
+            Err(e) => Err(Error::RequestError(Box::new(e))),
+        }
     }
 }
