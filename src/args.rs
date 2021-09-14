@@ -44,13 +44,13 @@ impl Args {
             let usage = format!(
                 "\n{} {} \u{2014} {}.\
                 \n\u{221F} written by {}\
-                \n\u{221F} licensed under {}\
+                \n\u{221F} licensed under MIT <{}>\
                 \n\nUsage:\n    {} [options] <file(s)>",
                 env!("CARGO_PKG_NAME"),
                 env!("CARGO_PKG_VERSION"),
                 env!("CARGO_PKG_DESCRIPTION"),
                 env!("CARGO_PKG_AUTHORS"),
-                env!("CARGO_PKG_LICENSE"),
+                env!("CARGO_PKG_REPOSITORY"),
                 env!("CARGO_PKG_NAME"),
             );
             println!("{}", opts.usage(&usage));
