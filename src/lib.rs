@@ -16,6 +16,7 @@ use crate::args::Args;
 use crate::config::Config;
 use crate::error::Result;
 use std::fs;
+use std::io::{self, Read};
 
 /// Runs `rustypaste-cli`.
 pub fn run(mut args: Args) -> Result<()> {
@@ -32,10 +33,19 @@ pub fn run(mut args: Args) -> Result<()> {
     }
     config.update_from_args(&args);
 
-    for file in args.files {
-        match upload::upload_file(&file, &config.server) {
-            Ok(url) => println!("{:?} -> {}", file, url.trim()),
-            Err(e) => eprintln!("{:?} -> {}", file, e),
+    if args.files.contains(&String::from("-")) {
+        let mut buffer = String::new();
+        io::stdin().read_to_string(&mut buffer)?;
+        match upload::upload_stream(buffer.as_bytes(), &config.server) {
+            Ok(url) => println!("stdin -> {}", url.trim()),
+            Err(e) => eprintln!("stdin -> {}", e),
+        }
+    } else {
+        for file in args.files {
+            match upload::upload_file(&file, &config.server) {
+                Ok(url) => println!("{:?} -> {}", file, url.trim()),
+                Err(e) => eprintln!("{:?} -> {}", file, e),
+            }
         }
     }
 
