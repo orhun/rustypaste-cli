@@ -6,6 +6,8 @@ use serde::{Deserialize, Serialize};
 pub struct Config {
     /// Server configuration.
     pub server: ServerConfig,
+    /// Paste configuration.
+    pub paste: PasteConfig,
 }
 
 /// Server configuration.
@@ -17,6 +19,13 @@ pub struct ServerConfig {
     pub auth_token: Option<String>,
 }
 
+/// Paste configuration.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct PasteConfig {
+    /// Whether if the file will disappear after being viewed once.
+    pub oneshot: Option<bool>,
+}
+
 impl Config {
     /// Override the configuration file with arguments.
     pub fn update_from_args(&mut self, args: &Args) {
@@ -25,6 +34,9 @@ impl Config {
         }
         if args.auth.is_some() {
             self.server.auth_token = args.auth.as_ref().cloned();
+        }
+        if args.oneshot {
+            self.paste.oneshot = Some(true);
         }
     }
 }

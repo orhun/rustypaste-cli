@@ -1,3 +1,6 @@
 [server]
 address="https://paste.example.com"
 #auth_token=""
+
+[paste]
+oneshot = false

@@ -20,21 +20,21 @@ use std::fs;
 use std::io::{self, Read};
 
 /// Runs `rustypaste-cli`.
-pub fn run(mut args: Args) -> Result<()> {
-    let mut config = Config::default();
-
-    if let Some(config_dir) = dirs_next::home_dir() {
-        let path = config_dir.join(".rustypaste").join("config.toml");
-        if path.exists() {
-            args.config = Some(path);
-        }
-    }
-    if let Some(ref config_path) = args.config {
-        config = toml::from_str::<Config>(&fs::read_to_string(&config_path)?)?;
-    }
+pub fn run(args: Args) -> Result<()> {
+    let mut config = if let Some(ref config_path) = args.config {
+        toml::from_str(&fs::read_to_string(&config_path)?)?
+    } else if let Some(path) = dirs_next::home_dir()
+        .map(|p| p.join(".rustypaste").join("config.toml"))
+        .map(|p| p.exists().then(|| p))
+        .flatten()
+    {
+        toml::from_str(&fs::read_to_string(&path)?)?
+    } else {
+        Config::default()
+    };
     config.update_from_args(&args);
 
-    let uploader = Uploader::new(&config.server);
+    let uploader = Uploader::new(&config);
     if let Some(url) = args.url {
         match uploader.upload_url(&url) {
             Ok(short_url) => println!("{:?} -> {}", url, short_url.trim()),

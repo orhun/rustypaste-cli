@@ -16,6 +16,8 @@ pub struct Args {
     pub url: Option<String>,
     /// Files to upload.
     pub files: Vec<String>,
+    /// Whether if links will be generated as one shot.
+    pub oneshot: bool,
 }
 
 impl Args {
@@ -24,6 +26,7 @@ impl Args {
         let mut opts = Options::new();
         opts.optflag("h", "help", "prints help information");
         opts.optflag("v", "version", "prints version information");
+        opts.optflag("o", "oneshot", "generates one shot links");
         opts.optopt("c", "config", "sets the configuration file", "CONFIG");
         opts.optopt(
             "s",
@@ -70,6 +73,7 @@ impl Args {
             server: matches.opt_str("s"),
             auth: matches.opt_str("a"),
             url: matches.opt_str("u"),
+            oneshot: matches.opt_present("o"),
             files: matches.free,
         }
     }

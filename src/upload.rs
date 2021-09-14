@@ -1,4 +1,4 @@
-use crate::config::ServerConfig;
+use crate::config::Config;
 use crate::error::{Error, Result};
 use multipart::client::lazy::Multipart;
 use std::io::Read;
@@ -13,12 +13,12 @@ pub struct Uploader<'a> {
     /// HTTP client.
     client: Agent,
     /// Server configuration.
-    config: &'a ServerConfig,
+    config: &'a Config,
 }
 
 impl<'a> Uploader<'a> {
     /// Constructs a new instance.
-    pub fn new(config: &'a ServerConfig) -> Self {
+    pub fn new(config: &'a Config) -> Self {
         Self {
             client: AgentBuilder::new()
                 .user_agent(&format!(
@@ -33,8 +33,13 @@ impl<'a> Uploader<'a> {
 
     /// Uploads the given file to the server.
     pub fn upload_file(&self, file: &str) -> Result<String> {
+        let field = if self.config.paste.oneshot == Some(true) {
+            "oneshot"
+        } else {
+            "file"
+        };
         let mut multipart = Multipart::new();
-        multipart.add_file("file", file);
+        multipart.add_file(field, file);
 
         self.upload(multipart)
     }
@@ -49,8 +54,13 @@ impl<'a> Uploader<'a> {
 
     /// Uploads a stream to the server.
     pub fn upload_stream<S: Read>(&self, stream: S) -> Result<String> {
+        let field = if self.config.paste.oneshot == Some(true) {
+            "oneshot"
+        } else {
+            "file"
+        };
         let mut multipart = Multipart::new();
-        multipart.add_stream("file", stream, DEFAULT_FILE_NAME, None);
+        multipart.add_stream(field, stream, DEFAULT_FILE_NAME, None);
 
         self.upload(multipart)
     }
@@ -58,14 +68,14 @@ impl<'a> Uploader<'a> {
     /// Uploads the given multipart data.
     fn upload(&self, mut multipart: Multipart<'static, '_>) -> Result<String> {
         let multipart_data = multipart.prepare()?;
-        let mut request = self.client.post(&self.config.address).set(
+        let mut request = self.client.post(&self.config.server.address).set(
             "Content-Type",
             &format!(
                 "multipart/form-data; boundary={}",
                 multipart_data.boundary()
             ),
         );
-        if let Some(auth_token) = &self.config.auth_token {
+        if let Some(auth_token) = &self.config.server.auth_token {
             request = request.set("Authorization", auth_token);
         }
         let response = request
