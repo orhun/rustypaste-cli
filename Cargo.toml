@@ -2,7 +2,27 @@
 name = "rustypaste-cli"
 version = "0.1.0"
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "A CLI tool for rustypaste"
+authors = ["Orhun Parmaksız <orhunparmaksiz@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/orhun/rustypaste-cli"
+repository = "https://github.com/orhun/rustypaste-cli"
+keywords = ["paste", "pastebin", "upload"]
+categories = ["command-line-utilities"]
 
 [dependencies]
+serde = { version = "1.0.128", default-features = false, features = ["derive"] }
+toml = "0.5.8"
+dirs-next = "2.0.0"
+thiserror = "1.0.26"
+getopts = "0.2.21"
+ureq = "2.1.1"
+multipart = { version = "0.18.0", default-features = false, features = ["client"] }
+
+[profile.release]
+opt-level = 3
+debug = false
+panic = "unwind"
+lto = true
+codegen-units = 1

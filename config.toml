@@ -1,0 +1,3 @@
+[server]
+address="https://paste.example.com"
+#auth_token=""
