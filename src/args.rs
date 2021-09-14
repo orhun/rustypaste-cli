@@ -18,6 +18,8 @@ pub struct Args {
     pub files: Vec<String>,
     /// Whether if links will be generated as one shot.
     pub oneshot: bool,
+    /// Expiration time of the link.
+    pub expire: Option<String>,
 }
 
 impl Args {
@@ -36,6 +38,12 @@ impl Args {
         );
         opts.optopt("a", "auth", "sets the authentication token", "TOKEN");
         opts.optopt("u", "url", "sets the URL to shorten", "URL");
+        opts.optopt(
+            "e",
+            "expire",
+            "sets the expiration time for the link",
+            "TIME",
+        );
 
         let env_args: Vec<String> = env::args().collect();
         let matches = match opts.parse(&env_args[1..]) {
@@ -74,6 +82,7 @@ impl Args {
             auth: matches.opt_str("a"),
             url: matches.opt_str("u"),
             oneshot: matches.opt_present("o"),
+            expire: matches.opt_str("e"),
             files: matches.free,
         }
     }

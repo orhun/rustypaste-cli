@@ -24,6 +24,8 @@ pub struct ServerConfig {
 pub struct PasteConfig {
     /// Whether if the file will disappear after being viewed once.
     pub oneshot: Option<bool>,
+    /// Expiration time for the links.
+    pub expire: Option<String>,
 }
 
 impl Config {
@@ -37,6 +39,9 @@ impl Config {
         }
         if args.oneshot {
             self.paste.oneshot = Some(true);
+        }
+        if args.expire.is_some() {
+            self.paste.expire = args.expire.as_ref().cloned();
         }
     }
 }

@@ -7,6 +7,9 @@ use ureq::{Agent, AgentBuilder};
 /// Default file name to use for multipart stream.
 const DEFAULT_FILE_NAME: Option<&str> = Some("file");
 
+/// HTTP header to use for specifying expiration times.
+const EXPIRATION_HEADER: &str = "expire";
+
 /// Upload handler.
 #[derive(Debug)]
 pub struct Uploader<'a> {
@@ -77,6 +80,9 @@ impl<'a> Uploader<'a> {
         );
         if let Some(auth_token) = &self.config.server.auth_token {
             request = request.set("Authorization", auth_token);
+        }
+        if let Some(expiration_time) = &self.config.paste.expire {
+            request = request.set(EXPIRATION_HEADER, expiration_time);
         }
         let response = request
             .send(multipart_data)

@@ -1,6 +1,7 @@
 [server]
-address="https://paste.example.com"
-#auth_token=""
+address = "https://paste.example.com"
+#auth_token = ""
 
 [paste]
 oneshot = false
+#expire = "10min"
