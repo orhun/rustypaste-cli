@@ -16,6 +16,7 @@ use crate::args::Args;
 use crate::config::Config;
 use crate::error::Result;
 use crate::upload::Uploader;
+use colored::Colorize;
 use std::fs;
 use std::io::{self, Read};
 
@@ -48,9 +49,23 @@ pub fn run(args: Args) -> Result<()> {
         }
     }
 
+    let format_padding = args
+        .prettify
+        .then(|| results.iter().map(|v| v.0.len()).max())
+        .flatten()
+        .unwrap_or(1);
     for (data, result) in results.iter().map(|v| (v.0, v.1.as_ref())) {
         let data = if args.prettify {
-            format!("{} -> ", data)
+            format!(
+                "{:p$} {} ",
+                data,
+                if result.is_ok() {
+                    "=>".green().bold()
+                } else {
+                    "=>".red().bold()
+                },
+                p = format_padding,
+            )
         } else {
             String::new()
         };

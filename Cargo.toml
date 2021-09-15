@@ -19,6 +19,7 @@ thiserror = "1.0.26"
 getopts = "0.2.21"
 ureq = "2.1.1"
 multipart = { version = "0.18.0", default-features = false, features = ["client"] }
+colored = "2.0.0"
 
 [profile.release]
 opt-level = 3
