@@ -34,25 +34,29 @@ pub fn run(args: Args) -> Result<()> {
     };
     config.update_from_args(&args);
 
+    let mut results = Vec::new();
     let uploader = Uploader::new(&config);
-    if let Some(url) = args.url {
-        match uploader.upload_url(&url) {
-            Ok(short_url) => println!("{:?} -> {}", url, short_url.trim()),
-            Err(e) => eprintln!("{:?} -> {}", url, e),
-        }
+    if let Some(ref url) = args.url {
+        results.push(uploader.upload_url(url));
     } else if args.files.contains(&String::from("-")) {
         let mut buffer = String::new();
         io::stdin().read_to_string(&mut buffer)?;
-        match uploader.upload_stream(buffer.as_bytes()) {
-            Ok(url) => println!("stdin -> {}", url.trim()),
-            Err(e) => eprintln!("stdin -> {}", e),
-        }
+        results.push(uploader.upload_stream(buffer.as_bytes()));
     } else {
-        for file in args.files {
-            match uploader.upload_file(&file) {
-                Ok(url) => println!("{:?} -> {}", file, url.trim()),
-                Err(e) => eprintln!("{:?} -> {}", file, e),
-            }
+        for file in args.files.iter() {
+            results.push(uploader.upload_file(file))
+        }
+    }
+
+    for (data, result) in results.iter().map(|v| (v.0, v.1.as_ref())) {
+        let data = if args.prettify {
+            format!("{} -> ", data)
+        } else {
+            String::new()
+        };
+        match result {
+            Ok(url) => println!("{}{}", data, url.trim()),
+            Err(e) => eprintln!("{}{}", data, e),
         }
     }
 

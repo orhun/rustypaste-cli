@@ -11,6 +11,10 @@ const DEFAULT_FILE_NAME: Option<&str> = Some("file");
 /// HTTP header to use for specifying expiration times.
 const EXPIRATION_HEADER: &str = "expire";
 
+/// Wrapper around raw data and result.
+#[derive(Debug)]
+pub struct UploadResult<'a, T>(pub &'a str, pub Result<T>);
+
 /// Upload handler.
 #[derive(Debug)]
 pub struct Uploader<'a> {
@@ -36,7 +40,7 @@ impl<'a> Uploader<'a> {
     }
 
     /// Uploads the given file to the server.
-    pub fn upload_file(&self, file: &str) -> Result<String> {
+    pub fn upload_file(&self, file: &'a str) -> UploadResult<'a, String> {
         let field = if self.config.paste.oneshot == Some(true) {
             "oneshot"
         } else {
@@ -45,19 +49,19 @@ impl<'a> Uploader<'a> {
         let mut multipart = Multipart::new();
         multipart.add_file(field, file);
 
-        self.upload(multipart)
+        UploadResult(file, self.upload(multipart))
     }
 
     /// Uploads the given url (stream) to the server.
-    pub fn upload_url(&self, url: &str) -> Result<String> {
+    pub fn upload_url(&self, url: &'a str) -> UploadResult<'a, String> {
         let mut multipart = Multipart::new();
         multipart.add_stream::<_, &[u8], &str>("url", url.as_bytes(), None, None);
 
-        self.upload(multipart)
+        UploadResult(url, self.upload(multipart))
     }
 
     /// Uploads a stream to the server.
-    pub fn upload_stream<S: Read>(&self, stream: S) -> Result<String> {
+    pub fn upload_stream<S: Read>(&self, stream: S) -> UploadResult<'a, String> {
         let field = if self.config.paste.oneshot == Some(true) {
             "oneshot"
         } else {
@@ -66,7 +70,7 @@ impl<'a> Uploader<'a> {
         let mut multipart = Multipart::new();
         multipart.add_stream(field, stream, DEFAULT_FILE_NAME, None);
 
-        self.upload(multipart)
+        UploadResult("stream", self.upload(multipart))
     }
 
     /// Uploads the given multipart data.

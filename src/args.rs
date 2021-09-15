@@ -20,6 +20,8 @@ pub struct Args {
     pub oneshot: bool,
     /// Expiration time for the link.
     pub expire: Option<String>,
+    /// Prettify the program output.
+    pub prettify: bool,
 }
 
 impl Args {
@@ -29,6 +31,7 @@ impl Args {
         opts.optflag("h", "help", "prints help information");
         opts.optflag("v", "version", "prints version information");
         opts.optflag("o", "oneshot", "generates one shot links");
+        opts.optflag("p", "pretty", "prettifies the output");
         opts.optopt("c", "config", "sets the configuration file", "CONFIG");
         opts.optopt(
             "s",
@@ -83,6 +86,7 @@ impl Args {
             url: matches.opt_str("u"),
             oneshot: matches.opt_present("o"),
             expire: matches.opt_str("e"),
+            prettify: matches.opt_present("p"),
             files: matches.free,
         }
     }
