@@ -10,6 +10,11 @@ homepage = "https://github.com/orhun/rustypaste-cli"
 repository = "https://github.com/orhun/rustypaste-cli"
 keywords = ["paste", "pastebin", "upload"]
 categories = ["command-line-utilities"]
+default-run = "rpaste"
+
+[[bin]]
+name = "rpaste"
+path = "src/main.rs"
 
 [dependencies]
 serde = { version = "1.0.128", default-features = false, features = ["derive"] }
