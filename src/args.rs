@@ -80,7 +80,10 @@ impl Args {
         }
 
         Args {
-            config: matches.opt_str("c").map(PathBuf::from),
+            config: env::var("RPASTE_CONFIG")
+                .ok()
+                .or_else(|| matches.opt_str("c"))
+                .map(PathBuf::from),
             server: matches.opt_str("s"),
             auth: matches.opt_str("a"),
             url: matches.opt_str("u"),
