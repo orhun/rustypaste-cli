@@ -20,7 +20,7 @@ use colored::Colorize;
 use std::fs;
 use std::io::{self, Read};
 
-/// Runs `rustypaste-cli`.
+/// Runs `rpaste`.
 pub fn run(args: Args) -> Result<()> {
     let mut config = if let Some(ref config_path) = args.config {
         toml::from_str(&fs::read_to_string(&config_path)?)?
