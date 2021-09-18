@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    name: Build on ${{ matrix.OS }} for ${{ matrix.TARGET }} using Rust ${{ matrix.TOOLCHAIN }}
+    name: Build for ${{ matrix.TARGET }} using Rust ${{ matrix.TOOLCHAIN }} (on ${{ matrix.OS }})
     runs-on: ${{ matrix.OS }}
     strategy:
       fail-fast: false
