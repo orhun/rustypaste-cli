@@ -62,11 +62,12 @@ jobs:
           args: -- -D warnings
 
   audit:
+    name: Perform audit for security
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
-      - name: Run security audit check
+      - name: Run cargo-audit
         uses: actions-rs/audit-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
