@@ -40,9 +40,12 @@ pub fn run(args: Args) -> Result<()> {
     if let Some(ref url) = args.url {
         results.push(uploader.upload_url(url));
     } else if args.files.contains(&String::from("-")) {
-        let mut buffer = String::new();
-        io::stdin().read_to_string(&mut buffer)?;
-        results.push(uploader.upload_stream(buffer.as_bytes()));
+        let mut buffer = Vec::new();
+        let stdin = io::stdin();
+        for bytes in stdin.bytes() {
+            buffer.push(bytes?);
+        }
+        results.push(uploader.upload_stream(&*buffer));
     } else {
         for file in args.files.iter() {
             results.push(uploader.upload_file(file))
