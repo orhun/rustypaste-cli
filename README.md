@@ -93,6 +93,10 @@ The configuration file can be specified via `--config` argument and `RPASTE_CONF
 
 See [config.toml](./config.toml) for configuration options.
 
+## Todo
+
+* Use [url::Url](https://docs.rs/url/latest/url/struct.Url.html) for parsing URLs
+
 ## Contributing
 
 Pull requests are welcome!
