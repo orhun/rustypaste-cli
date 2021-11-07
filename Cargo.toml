@@ -20,9 +20,9 @@ path = "src/main.rs"
 serde = { version = "1.0.128", default-features = false, features = ["derive"] }
 toml = "0.5.8"
 dirs-next = "2.0.0"
-thiserror = "1.0.26"
+thiserror = "1.0.30"
 getopts = "0.2.21"
-ureq = "2.1.1"
+ureq = "2.3.0"
 multipart = { version = "0.18.0", default-features = false, features = ["client"] }
 colored = "2.0.0"
 
