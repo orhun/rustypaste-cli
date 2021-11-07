@@ -37,6 +37,7 @@ cargo build --release
 -s, --server SERVER sets the address of the rustypaste server
 -a, --auth TOKEN    sets the authentication token
 -u, --url URL       sets the URL to shorten
+-r, --remote URL    sets the remote URL for uploading
 -e, --expire TIME   sets the expiration time for the link
 ```
 
@@ -60,6 +61,12 @@ rpaste awesome.txt other.txt
 
 ```sh
 rpaste -u https://example.com/some/long/url
+```
+
+### Paste from URL
+
+```sh
+rpaste -r https://example.com/file.txt
 ```
 
 ### One shot
