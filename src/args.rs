@@ -14,6 +14,8 @@ pub struct Args {
     pub auth: Option<String>,
     /// URL to shorten.
     pub url: Option<String>,
+    /// Remote URL to download file.
+    pub remote: Option<String>,
     /// Files to upload.
     pub files: Vec<String>,
     /// Whether if the file will disappear after being viewed once.
@@ -41,6 +43,7 @@ impl Args {
         );
         opts.optopt("a", "auth", "sets the authentication token", "TOKEN");
         opts.optopt("u", "url", "sets the URL to shorten", "URL");
+        opts.optopt("r", "remote", "sets the remote URL for uploading", "URL");
         opts.optopt(
             "e",
             "expire",
@@ -57,7 +60,9 @@ impl Args {
             }
         };
 
-        if matches.opt_present("h") || (matches.free.is_empty() && !matches.opt_present("u")) {
+        if matches.opt_present("h")
+            || (matches.free.is_empty() && !matches.opt_present("u") && !matches.opt_present("r"))
+        {
             let usage = format!(
                 "\n{} {} \u{2014} {}.\
                 \n\u{221F} written by {}\
@@ -87,6 +92,7 @@ impl Args {
             server: matches.opt_str("s"),
             auth: matches.opt_str("a"),
             url: matches.opt_str("u"),
+            remote: matches.opt_str("r"),
             oneshot: matches.opt_present("o"),
             expire: matches.opt_str("e"),
             prettify: matches.opt_present("p"),

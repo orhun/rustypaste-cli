@@ -52,10 +52,18 @@ impl<'a> Uploader<'a> {
         UploadResult(file, self.upload(multipart))
     }
 
-    /// Uploads the given url (stream) to the server.
+    /// Uploads the given URL (stream) to the server.
     pub fn upload_url(&self, url: &'a str) -> UploadResult<'a, String> {
         let mut multipart = Multipart::new();
         multipart.add_stream::<_, &[u8], &str>("url", url.as_bytes(), None, None);
+
+        UploadResult(url, self.upload(multipart))
+    }
+
+    /// Uploads the given remote URL (stream) to the server.
+    pub fn upload_remote_url(&self, url: &'a str) -> UploadResult<'a, String> {
+        let mut multipart = Multipart::new();
+        multipart.add_stream::<_, &[u8], &str>("remote", url.as_bytes(), None, None);
 
         UploadResult(url, self.upload(multipart))
     }

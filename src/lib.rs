@@ -39,6 +39,8 @@ pub fn run(args: Args) -> Result<()> {
     let uploader = Uploader::new(&config);
     if let Some(ref url) = args.url {
         results.push(uploader.upload_url(url));
+    } else if let Some(ref remote_url) = args.remote {
+        results.push(uploader.upload_remote_url(remote_url));
     } else if args.files.contains(&String::from("-")) {
         let mut buffer = Vec::new();
         let stdin = io::stdin();
