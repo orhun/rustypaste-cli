@@ -26,8 +26,7 @@ pub fn run(args: Args) -> Result<()> {
         toml::from_str(&fs::read_to_string(&config_path)?)?
     } else if let Some(path) = dirs_next::home_dir()
         .map(|p| p.join(".rustypaste").join("config.toml"))
-        .map(|p| p.exists().then(|| p))
-        .flatten()
+        .and_then(|p| p.exists().then(|| p))
     {
         toml::from_str(&fs::read_to_string(&path)?)?
     } else {
