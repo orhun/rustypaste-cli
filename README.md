@@ -12,6 +12,12 @@ A CLI tool for [**rustypaste**](https://github.com/orhun/rustypaste).
 cargo install rustypaste-cli
 ```
 
+### From the AUR
+
+```
+paru -S rustypaste-cli
+```
+
 ### Binary releases
 
 See the available binaries on [releases](https://github.com/orhun/rustypaste-cli/releases/) page.
