@@ -17,12 +17,12 @@ name = "rpaste"
 path = "src/main.rs"
 
 [dependencies]
-serde = { version = "1.0.128", default-features = false, features = ["derive"] }
+serde = { version = "1.0.136", default-features = false, features = ["derive"] }
 toml = "0.5.8"
 dirs-next = "2.0.0"
 thiserror = "1.0.30"
 getopts = "0.2.21"
-ureq = "2.3.0"
+ureq = "2.4.0"
 multipart = { version = "0.18.0", default-features = false, features = ["client"] }
 colored = "2.0.0"
 
