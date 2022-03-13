@@ -6,16 +6,16 @@ A CLI tool for [**rustypaste**](https://github.com/orhun/rustypaste).
 
 ## Installation
 
-### From crates.io
+### crates.io
 
 ```sh
 cargo install rustypaste-cli
 ```
 
-### From the AUR
+### Arch Linux
 
 ```
-paru -S rustypaste-cli
+pacman -S rustypaste-cli
 ```
 
 ### Binary releases
