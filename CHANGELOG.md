@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow specifying `prettify` in config
 - Add a manpage
 
+### Changed
+- Respect `XDG_CONFIG_HOME` as global config location
+- Exit with a more informative message if no address is given
+
 ## [0.1.4] - 2022-03-13
 ### Added
 - Add instructions for installing on Arch Linux
