@@ -15,6 +15,9 @@ pub enum Error {
     /// Error that might occur while uploading files.
     #[error("Upload error: `{0}`")]
     UploadError(String),
+    /// Error that might occur when no server address is provided.
+    #[error("No rustypaste server address is given.")]
+    NoServerAddressError,
     /// Error that might occur during the preparation of the multipart data.
     #[error("Multipart IO error: `{0}`")]
     MultipartIOError(#[from] multipart::client::lazy::LazyError<'static, std::io::Error>),

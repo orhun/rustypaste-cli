@@ -14,7 +14,7 @@ pub mod upload;
 
 use crate::args::Args;
 use crate::config::Config;
-use crate::error::Result;
+use crate::error::{Error, Result};
 use crate::upload::Uploader;
 use colored::Colorize;
 use std::fs;
@@ -43,6 +43,9 @@ pub fn run(args: Args) -> Result<()> {
         }
     }
     config.update_from_args(&args);
+    if config.server.address.is_empty() {
+        return Err(Error::NoServerAddressError);
+    }
 
     let mut results = Vec::new();
     let uploader = Uploader::new(&config);
