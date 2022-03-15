@@ -20,18 +20,28 @@ use colored::Colorize;
 use std::fs;
 use std::io::{self, Read};
 
+/// Default name of the configuration file.
+const CONFIG_FILE: &str = "config.toml";
+
 /// Runs `rpaste`.
 pub fn run(args: Args) -> Result<()> {
-    let mut config = if let Some(ref config_path) = args.config {
-        toml::from_str(&fs::read_to_string(&config_path)?)?
-    } else if let Some(path) = dirs_next::home_dir()
-        .map(|p| p.join(".rustypaste").join("config.toml"))
-        .and_then(|p| p.exists().then(|| p))
-    {
-        toml::from_str(&fs::read_to_string(&path)?)?
+    let mut config = Config::default();
+    if let Some(ref config_path) = args.config {
+        config = toml::from_str(&fs::read_to_string(&config_path)?)?
     } else {
-        Config::default()
-    };
+        for path in vec![
+            dirs_next::home_dir().map(|p| p.join(".rustypaste").join(CONFIG_FILE)),
+            dirs_next::config_dir().map(|p| p.join("rustypaste").join(CONFIG_FILE)),
+        ]
+        .iter()
+        .filter_map(|v| v.as_ref())
+        {
+            if path.exists() {
+                config = toml::from_str(&fs::read_to_string(&path)?)?;
+                break;
+            }
+        }
+    }
     config.update_from_args(&args);
 
     let mut results = Vec::new();

@@ -100,8 +100,9 @@ rpaste -e 1hour -u https://example.com/expire/1hour
 
 ## Configuration
 
-The configuration file can be specified via `--config` argument and `RPASTE_CONFIG` environment variable or it can be placed to the following global location:
+The configuration file can be specified via `--config` argument and `RPASTE_CONFIG` environment variable or it can be placed to the following global locations:
 
+* `$HOME/.config/rustypaste/config.toml`
 * `$HOME/.rustypaste/config.toml`
 
 See [config.toml](./config.toml) for configuration options.
