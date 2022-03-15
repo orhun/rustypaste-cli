@@ -8,6 +8,8 @@ pub struct Config {
     pub server: ServerConfig,
     /// Paste configuration.
     pub paste: PasteConfig,
+    /// Style configuration.
+    pub style: Option<StyleConfig>,
 }
 
 /// Server configuration.
@@ -26,6 +28,13 @@ pub struct PasteConfig {
     pub oneshot: Option<bool>,
     /// Expiration time for the link.
     pub expire: Option<String>,
+}
+
+/// Style configuration.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct StyleConfig {
+    /// Whether if the output will be prettified.
+    pub prettify: bool,
 }
 
 impl Config {

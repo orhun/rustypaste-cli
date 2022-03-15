@@ -52,14 +52,18 @@ pub fn run(args: Args) -> Result<()> {
             results.push(uploader.upload_file(file))
         }
     }
-
-    let format_padding = args
-        .prettify
+    let prettify = args.prettify
+        || config
+            .style
+            .as_ref()
+            .map(|style| style.prettify)
+            .unwrap_or(false);
+    let format_padding = prettify
         .then(|| results.iter().map(|v| v.0.len()).max())
         .flatten()
         .unwrap_or(1);
     for (data, result) in results.iter().map(|v| (v.0, v.1.as_ref())) {
-        let data = if args.prettify {
+        let data = if prettify {
             format!(
                 "{:p$} {} ",
                 data,

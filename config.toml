@@ -5,3 +5,6 @@ address = "https://paste.example.com"
 [paste]
 oneshot = false
 #expire = "10min"
+
+[style]
+prettify = false
