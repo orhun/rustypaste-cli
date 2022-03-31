@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.6] - 2022-03-31
+### Updated
+- Fix typo in the manpage identifier
+- Use `url::Url` for parsing URLs
+
 ## [0.1.5] - 2022-03-15
 ### Added
 - Allow specifying `prettify` in config
