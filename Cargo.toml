@@ -25,6 +25,7 @@ getopts = "0.2.21"
 ureq = "2.4.0"
 multipart = { version = "0.18.0", default-features = false, features = ["client"] }
 colored = "2.0.0"
+url = "2.2.2"
 
 [profile.release]
 opt-level = 3

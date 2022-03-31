@@ -390,6 +390,7 @@ dependencies = [
  "thiserror",
  "toml",
  "ureq",
+ "url",
 ]
 
 [[package]]

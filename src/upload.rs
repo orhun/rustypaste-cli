@@ -4,6 +4,7 @@ use multipart::client::lazy::Multipart;
 use std::io::Read;
 use ureq::Error as UreqError;
 use ureq::{Agent, AgentBuilder};
+use url::Url;
 
 /// Default file name to use for multipart stream.
 const DEFAULT_FILE_NAME: Option<&str> = Some("file");
@@ -54,18 +55,24 @@ impl<'a> Uploader<'a> {
 
     /// Uploads the given URL (stream) to the server.
     pub fn upload_url(&self, url: &'a str) -> UploadResult<'a, String> {
-        let mut multipart = Multipart::new();
-        multipart.add_stream::<_, &[u8], &str>("url", url.as_bytes(), None, None);
-
-        UploadResult(url, self.upload(multipart))
+        if let Err(e) = Url::parse(url) {
+            UploadResult(url, Err(e.into()))
+        } else {
+            let mut multipart = Multipart::new();
+            multipart.add_stream::<_, &[u8], &str>("url", url.as_bytes(), None, None);
+            UploadResult(url, self.upload(multipart))
+        }
     }
 
     /// Uploads the given remote URL (stream) to the server.
     pub fn upload_remote_url(&self, url: &'a str) -> UploadResult<'a, String> {
-        let mut multipart = Multipart::new();
-        multipart.add_stream::<_, &[u8], &str>("remote", url.as_bytes(), None, None);
-
-        UploadResult(url, self.upload(multipart))
+        if let Err(e) = Url::parse(url) {
+            UploadResult(url, Err(e.into()))
+        } else {
+            let mut multipart = Multipart::new();
+            multipart.add_stream::<_, &[u8], &str>("remote", url.as_bytes(), None, None);
+            UploadResult(url, self.upload(multipart))
+        }
     }
 
     /// Uploads a stream to the server.
