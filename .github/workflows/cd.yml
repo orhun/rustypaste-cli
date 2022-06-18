@@ -62,7 +62,7 @@ jobs:
           else
             tar -czvf rustypaste-cli-${{ env.RELEASE_VERSION }}-${{ matrix.config.TARGET }}.tar.gz \
               rustypaste-cli-${{ env.RELEASE_VERSION }}/
-            sha512sum rustypaste-cli-${{ env.RELEASE_VERSION }}-${{ matrix.config.TARGET }}.tar.gz \
+            shasum -a 512 rustypaste-cli-${{ env.RELEASE_VERSION }}-${{ matrix.config.TARGET }}.tar.gz \
               > rustypaste-cli-${{ env.RELEASE_VERSION }}-${{ matrix.config.TARGET }}.tar.gz.sha512
           fi
 
