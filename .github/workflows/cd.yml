@@ -8,18 +8,23 @@ on:
 jobs:
   publish-github:
     name: Publish on GitHub
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.config.OS }}
     strategy:
       matrix:
-        TARGET:
-          - x86_64-unknown-linux-gnu
-          - x86_64-unknown-linux-musl
-          - i686-unknown-linux-gnu
-          - i686-unknown-linux-musl
-          - armv5te-unknown-linux-gnueabi
-          - armv7-unknown-linux-gnueabihf
-          - aarch64-unknown-linux-gnu
-          - aarch64-unknown-linux-musl
+        config:
+          - { OS: ubuntu-latest, TARGET: "x86_64-unknown-linux-gnu" }
+          - { OS: ubuntu-latest, TARGET: "x86_64-unknown-linux-musl" }
+          - { OS: ubuntu-latest, TARGET: "i686-unknown-linux-gnu" }
+          - { OS: ubuntu-latest, TARGET: "i686-unknown-linux-musl" }
+          - { OS: ubuntu-latest, TARGET: "armv5te-unknown-linux-gnueabi" }
+          - { OS: ubuntu-latest, TARGET: "armv7-unknown-linux-gnueabihf" }
+          - { OS: ubuntu-latest, TARGET: "aarch64-unknown-linux-gnu" }
+          - { OS: ubuntu-latest, TARGET: "aarch64-unknown-linux-musl" }
+          - { OS: ubuntu-latest, TARGET: "x86_64-pc-windows-gnu" }
+          - { OS: macos-latest, TARGET: "x86_64-apple-darwin" }
+          - { OS: macos-latest, TARGET: "aarch64-apple-darwin" }
+          - { OS: windows-latest, TARGET: "x86_64-pc-windows-msvc" }
+          - { OS: windows-latest, TARGET: "i686-pc-windows-msvc" }
 
     steps:
       - name: Checkout the repository
@@ -32,7 +37,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-          target: ${{ matrix.TARGET }}
+          target: ${{ matrix.config.TARGET }}
           override: true
 
       - name: Build
@@ -40,27 +45,32 @@ jobs:
         with:
           use-cross: true
           command: build
-          args: --release --locked --target ${{ matrix.TARGET }}
+          args: --release --locked --target ${{ matrix.config.TARGET }}
 
       - name: Prepare release assets
         run: |
           mkdir release/
           cp {LICENSE,README.md,CHANGELOG.md,config.toml} release/
-          cp target/${{ matrix.TARGET }}/release/rpaste release/
+          cp target/${{ matrix.config.TARGET }}/release/rpaste release/
           mv release/ rustypaste-cli-${{ env.RELEASE_VERSION }}/
 
       - name: Create release artifacts
         run: |
-          tar -czvf rustypaste-cli-${{ env.RELEASE_VERSION }}-${{ matrix.TARGET }}.tar.gz \
-            rustypaste-cli-${{ env.RELEASE_VERSION }}/
-          sha512sum rustypaste-cli-${{ env.RELEASE_VERSION }}-${{ matrix.TARGET }}.tar.gz \
-            > rustypaste-cli-${{ env.RELEASE_VERSION }}-${{ matrix.TARGET }}.tar.gz.sha512
+          if [ "${{ matrix.config.OS }}" = "windows-latest" ]; then
+            7z a -tzip "rustypaste-cli-${{ env.RELEASE_VERSION }}-${{ matrix.config.TARGET }}.zip" \
+              rustypaste-cli-${{ env.RELEASE_VERSION }}
+          else
+            tar -czvf rustypaste-cli-${{ env.RELEASE_VERSION }}-${{ matrix.config.TARGET }}.tar.gz \
+              rustypaste-cli-${{ env.RELEASE_VERSION }}/
+            sha512sum rustypaste-cli-${{ env.RELEASE_VERSION }}-${{ matrix.config.TARGET }}.tar.gz \
+              > rustypaste-cli-${{ env.RELEASE_VERSION }}-${{ matrix.config.TARGET }}.tar.gz.sha512
+          fi
 
       - name: Upload the release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: rustypaste-cli-${{ env.RELEASE_VERSION }}-${{ matrix.TARGET }}.tar.gz*
+          file: rustypaste-cli-${{ env.RELEASE_VERSION }}-${{ matrix.config.TARGET }}.*
           file_glob: true
           overwrite: true
           tag: ${{ github.ref }}
