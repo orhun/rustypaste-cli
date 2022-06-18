@@ -10,6 +10,7 @@ jobs:
     name: Publish on GitHub
     runs-on: ${{ matrix.config.OS }}
     strategy:
+      fail-fast: false
       matrix:
         config:
           - { OS: ubuntu-latest, TARGET: "x86_64-unknown-linux-gnu" }
