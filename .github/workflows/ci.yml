@@ -12,23 +12,26 @@ on:
 
 jobs:
   build:
-    name: Build for ${{ matrix.TARGET }} using Rust ${{ matrix.TOOLCHAIN }} (on ${{ matrix.OS }})
-    runs-on: ${{ matrix.OS }}
+    name: Build for ${{ matrix.config.TARGET }} using Rust ${{ matrix.TOOLCHAIN }} (on ${{ matrix.config.OS }})
+    runs-on: ${{ matrix.config.OS }}
     strategy:
       fail-fast: false
       matrix:
-        OS: [ubuntu-latest]
+        config:
+          - { OS: ubuntu-latest, TARGET: "x86_64-unknown-linux-gnu" }
+          - { OS: ubuntu-latest, TARGET: "x86_64-unknown-linux-musl" }
+          - { OS: ubuntu-latest, TARGET: "i686-unknown-linux-gnu" }
+          - { OS: ubuntu-latest, TARGET: "i686-unknown-linux-musl" }
+          - { OS: ubuntu-latest, TARGET: "armv5te-unknown-linux-gnueabi" }
+          - { OS: ubuntu-latest, TARGET: "armv7-unknown-linux-gnueabihf" }
+          - { OS: ubuntu-latest, TARGET: "aarch64-unknown-linux-gnu" }
+          - { OS: ubuntu-latest, TARGET: "aarch64-unknown-linux-musl" }
+          - { OS: ubuntu-latest, TARGET: "x86_64-pc-windows-gnu" }
+          - { OS: macos-latest, TARGET: "x86_64-apple-darwin" }
+          - { OS: macos-latest, TARGET: "aarch64-apple-darwin" }
+          - { OS: windows-latest, TARGET: "x86_64-pc-windows-msvc" }
+          - { OS: windows-latest, TARGET: "i686-pc-windows-msvc" }
         TOOLCHAIN: [stable, beta, nightly]
-        TARGET:
-          - x86_64-unknown-linux-gnu
-          - x86_64-unknown-linux-musl
-          - i686-unknown-linux-gnu
-          - i686-unknown-linux-musl
-          - armv5te-unknown-linux-gnueabi
-          - armv7-unknown-linux-gnueabihf
-          - aarch64-unknown-linux-gnu
-          - aarch64-unknown-linux-musl
-          - x86_64-pc-windows-gnu
 
     steps:
       - name: Checkout the repository
@@ -38,7 +41,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.TOOLCHAIN }}
-          target: ${{ matrix.TARGET }}
+          target: ${{ matrix.config.TARGET }}
           override: true
           components: rustfmt, clippy
 
@@ -58,7 +61,7 @@ jobs:
         with:
           use-cross: true
           command: build
-          args: --target ${{ matrix.TARGET }}
+          args: --target ${{ matrix.config.TARGET }}
 
       - name: Check formatting
         uses: actions-rs/cargo@v1
