@@ -48,6 +48,7 @@ jobs:
           args: --release --locked --target ${{ matrix.config.TARGET }}
 
       - name: Prepare release assets
+        shell: bash
         run: |
           mkdir release/
           cp {LICENSE,README.md,CHANGELOG.md,config.toml} release/
@@ -55,6 +56,7 @@ jobs:
           mv release/ rustypaste-cli-${{ env.RELEASE_VERSION }}/
 
       - name: Create release artifacts
+        shell: bash
         run: |
           if [ "${{ matrix.config.OS }}" = "windows-latest" ]; then
             7z a -tzip "rustypaste-cli-${{ env.RELEASE_VERSION }}-${{ matrix.config.TARGET }}.zip" \
