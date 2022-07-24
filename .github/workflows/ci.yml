@@ -46,15 +46,7 @@ jobs:
           components: rustfmt, clippy
 
       - name: Cache Cargo dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+        uses: Swatinem/rust-cache@v2
 
       - name: Build
         uses: actions-rs/cargo@v1
