@@ -27,7 +27,7 @@ const CONFIG_FILE: &str = "config.toml";
 pub fn run(args: Args) -> Result<()> {
     let mut config = Config::default();
     if let Some(ref config_path) = args.config {
-        config = toml::from_str(&fs::read_to_string(&config_path)?)?
+        config = toml::from_str(&fs::read_to_string(config_path)?)?
     } else {
         for path in vec![
             dirs_next::home_dir().map(|p| p.join(".rustypaste").join(CONFIG_FILE)),
@@ -37,7 +37,7 @@ pub fn run(args: Args) -> Result<()> {
         .filter_map(|v| v.as_ref())
         {
             if path.exists() {
-                config = toml::from_str(&fs::read_to_string(&path)?)?;
+                config = toml::from_str(&fs::read_to_string(path)?)?;
                 break;
             }
         }
