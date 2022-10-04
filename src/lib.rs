@@ -47,8 +47,13 @@ pub fn run(args: Args) -> Result<()> {
         return Err(Error::NoServerAddressError);
     }
 
-    let mut results = Vec::new();
     let uploader = Uploader::new(&config);
+    if args.print_server_version {
+        println!("rustypaste-server {}", uploader.retrieve_version()?);
+        return Ok(());
+    }
+
+    let mut results = Vec::new();
     if let Some(ref url) = args.url {
         results.push(uploader.upload_url(url));
     } else if let Some(ref remote_url) = args.remote {

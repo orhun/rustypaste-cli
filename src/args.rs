@@ -24,6 +24,8 @@ pub struct Args {
     pub expire: Option<String>,
     /// Prettify the program output.
     pub prettify: bool,
+    /// Whether if the server version should be printed.
+    pub print_server_version: bool,
 }
 
 impl Args {
@@ -32,6 +34,7 @@ impl Args {
         let mut opts = Options::new();
         opts.optflag("h", "help", "prints help information");
         opts.optflag("v", "version", "prints version information");
+        opts.optflag("V", "server-version", "retrieves the server version");
         opts.optflag("o", "oneshot", "generates one shot links");
         opts.optflag("p", "pretty", "prettifies the output");
         opts.optopt("c", "config", "sets the configuration file", "CONFIG");
@@ -61,7 +64,11 @@ impl Args {
         };
 
         if matches.opt_present("h")
-            || (matches.free.is_empty() && !matches.opt_present("u") && !matches.opt_present("r"))
+            || (matches.free.is_empty()
+                && !matches.opt_present("u")
+                && !matches.opt_present("r")
+                && !matches.opt_present("V")
+                && !matches.opt_present("v"))
         {
             let usage = format!(
                 "\n{} {} \u{2014} {}.\
@@ -96,6 +103,7 @@ impl Args {
             oneshot: matches.opt_present("o"),
             expire: matches.opt_str("e"),
             prettify: matches.opt_present("p"),
+            print_server_version: matches.opt_present("V"),
             files: matches.free,
         }
     }
