@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2022-10-04
+### Added
+- Add `--server-version` flag
+  - With the last release of `rustypaste`, it is now possible to retrieve the server version via `/version` endpoint.
+  - You can print the server version with using `-V`/`--server-version` flag with `rustypaste-cli`.
+
+### Updated
+- Upgrade dependencies
+- Enable [GitHub Sponsors](https://github.com/sponsors/orhun) for funding
+  - Consider supporting me for my open-source work 💖
+
 ## [0.1.8 ... 0.1.11] - 2022-06-18
 ### Updated
 - Build/release for more platforms (MacOS & Windows)

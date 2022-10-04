@@ -1,6 +1,6 @@
 [package]
 name = "rustypaste-cli"
-version = "0.1.11"
+version = "0.2.0"
 edition = "2021"
 description = "A CLI tool for rustypaste"
 authors = ["Orhun Parmaksız <orhunparmaksiz@gmail.com>"]
