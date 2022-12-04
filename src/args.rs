@@ -58,7 +58,7 @@ impl Args {
         let matches = match opts.parse(&env_args[1..]) {
             Ok(m) => m,
             Err(e) => {
-                eprintln!("Argument error: `{}`", e);
+                eprintln!("Argument error: `{e}`");
                 process::exit(1);
             }
         };

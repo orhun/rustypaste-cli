@@ -6,7 +6,7 @@ pub fn main() {
     match rustypaste_cli::run(args) {
         Ok(_) => process::exit(0),
         Err(e) => {
-            eprintln!("{}", e);
+            eprintln!("{e}");
             process::exit(1)
         }
     }

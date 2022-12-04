@@ -97,7 +97,7 @@ pub fn run(args: Args) -> Result<()> {
         };
         match result {
             Ok(url) => println!("{}{}", data, url.trim()),
-            Err(e) => eprintln!("{}{}", data, e),
+            Err(e) => eprintln!("{data}{e}"),
         }
     }
 

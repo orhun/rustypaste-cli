@@ -110,15 +110,13 @@ impl<'a> Uploader<'a> {
                 let response_text = response.into_string()?;
                 if response_text.lines().count() != 1 {
                     Err(Error::UploadError(format!(
-                        "server returned invalid body (status code: {})",
-                        status
+                        "server returned invalid body (status code: {status})"
                     )))
                 } else if status == 200 {
                     Ok(response_text)
                 } else {
                     Err(Error::UploadError(format!(
-                        "unknown error (status code: {})",
-                        status
+                        "unknown error (status code: {status})"
                     )))
                 }
             }
