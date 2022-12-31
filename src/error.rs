@@ -24,6 +24,9 @@ pub enum Error {
     /// Error that might occur during parsing URLs.
     #[error("URL parsing error: `{0}`")]
     UrlParseError(#[from] url::ParseError),
+    /// Error that might occur during parsing a progress bar template.
+    #[error("Template parsing error: `{0}`")]
+    TemplateParseError(#[from] indicatif::style::TemplateError),
 }
 
 /// Type alias for the Result type.

@@ -26,6 +26,7 @@ ureq = "2.5.0"
 multipart = { version = "0.18.0", default-features = false, features = ["client"] }
 colored = "2.0.0"
 url = "2.3.1"
+indicatif = "=0.17.0" # https://github.com/console-rs/indicatif/issues/493
 
 [profile.release]
 opt-level = 3
