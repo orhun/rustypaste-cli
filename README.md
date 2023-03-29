@@ -62,6 +62,11 @@ or specify them in the [configuration file](#configuration).
 ```sh
 rpaste awesome.txt other.txt
 ```
+### Upload from stdin
+
+```sh
+echo "Hello World" | rpaste -
+```
 
 ### Shorten URLs
 
