@@ -86,6 +86,12 @@ rpaste -r https://example.com/file.txt
 rpaste -o disappear_after_seen.txt
 ```
 
+### One shot URL
+
+```sh
+rpaste -ou https://example.com/some/long/url
+```
+
 ### Expiration
 
 ```sh
