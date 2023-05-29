@@ -95,11 +95,17 @@ impl<'a> Uploader<'a> {
 
     /// Uploads the given URL (stream) to the server.
     pub fn upload_url(&self, url: &'a str) -> UploadResult<'a, String> {
+        let field = if self.config.paste.oneshot == Some(true) {
+            "oneshot_url"
+        } else {
+            "url"
+        };
+
         if let Err(e) = Url::parse(url) {
             UploadResult(url, Err(e.into()))
         } else {
             let mut multipart = Multipart::new();
-            multipart.add_stream::<_, &[u8], &str>("url", url.as_bytes(), None, None);
+            multipart.add_stream::<_, &[u8], &str>(field, url.as_bytes(), None, None);
             UploadResult(url, self.upload(multipart))
         }
     }
