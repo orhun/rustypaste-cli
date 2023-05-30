@@ -70,6 +70,7 @@ or specify them in the [configuration file](#configuration).
 ```sh
 rpaste awesome.txt other.txt
 ```
+
 ### Upload from stdin
 
 ```sh
@@ -114,15 +115,15 @@ rpaste -e 1hour -u https://example.com/expire/1hour
 
 ### Extras
 
-* Show a _prettier_ output: `rpaste -p [...]`
-* [Disable colors](https://no-color.org/) in the output: `NO_COLOR=1 rpaste -p [...]`
+- Show a _prettier_ output: `rpaste -p [...]`
+- [Disable colors](https://no-color.org/) in the output: `NO_COLOR=1 rpaste -p [...]`
 
 ## Configuration
 
 The configuration file can be specified via `--config` argument and `RPASTE_CONFIG` environment variable or it can be placed to the following global locations:
 
-* `$HOME/.config/rustypaste/config.toml`
-* `$HOME/.rustypaste/config.toml`
+- `$HOME/.config/rustypaste/config.toml`
+- `$HOME/.rustypaste/config.toml`
 
 See [config.toml](./config.toml) for configuration options.
 
