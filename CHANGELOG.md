@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2023-05-31
+
+### Added
+
+- Support uploading one shot URLs
+
+`rustypaste` supports one shot URL uploads since [`0.10.0`](https://github.com/orhun/rustypaste/releases/tag/v0.10.0). To use this feature:
+
+```sh
+rpaste -ou https://example.com/some/long/url
+```
+
+- Add example for using the stdin
+- Add installation instructions for Alpine Linux
+
+### Changed
+
+- Update funding options
+  - [Buy me a coffee to support my open source endeavours!](https://www.buymeacoffee.com/orhun) ☕
+
 ## [0.3.0] - 2022-12-31
 
 ### Added
