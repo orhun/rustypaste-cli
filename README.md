@@ -18,6 +18,14 @@ cargo install rustypaste-cli
 pacman -S rustypaste-cli
 ```
 
+### Alpine Linux
+
+`rustypaste-cli` is available for [Alpine Edge](https://pkgs.alpinelinux.org/packages?name=rustypaste-cli&branch=edge). It can be installed via [apk](https://wiki.alpinelinux.org/wiki/Alpine_Package_Keeper) after enabling the [testing repository](https://wiki.alpinelinux.org/wiki/Repositories).
+
+```sh
+apk add rustypaste-cli
+```
+
 ### Binary releases
 
 See the available binaries on [releases](https://github.com/orhun/rustypaste-cli/releases/) page.
