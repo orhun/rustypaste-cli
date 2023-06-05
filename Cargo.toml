@@ -28,7 +28,7 @@ multipart = { version = "0.18.0", default-features = false, features = [
 ] }
 colored = "2.0.0"
 url = "2.4.0"
-indicatif = "0.17.4"
+indicatif = "0.17.5"
 
 [profile.release]
 opt-level = 3
