@@ -27,7 +27,7 @@ multipart = { version = "0.18.0", default-features = false, features = [
   "client",
 ] }
 colored = "2.0.0"
-url = "2.3.1"
+url = "2.4.0"
 indicatif = "0.17.4"
 
 [profile.release]
