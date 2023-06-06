@@ -122,8 +122,16 @@ rpaste -e 1hour -u https://example.com/expire/1hour
 
 The configuration file can be specified via `--config` argument and `RPASTE_CONFIG` environment variable or it can be placed to the following global locations:
 
-- `$HOME/.config/rustypaste/config.toml`
-- `$HOME/.rustypaste/config.toml`
+- `<config_dir>` `/` `rustypaste/config.toml`
+- `<home_dir>` `/` `.rustypaste/config.toml`
+
+`<config_dir>` depends on the platform as shown in the following table:
+
+| Platform | Value                                 | Example                                  |
+| -------- | ------------------------------------- | ---------------------------------------- |
+| Linux    | `$XDG_CONFIG_HOME` or `$HOME`/.config | /home/alice/.config                      |
+| macOS    | `$HOME`/Library/Application Support   | /Users/Alice/Library/Application Support |
+| Windows  | `{FOLDERID_RoamingAppData}`           | C:\Users\Alice\AppData\Roaming           |
 
 See [config.toml](./config.toml) for configuration options.
 
