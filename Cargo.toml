@@ -22,7 +22,7 @@ toml = "0.7.4"
 dirs-next = "2.0.0"
 thiserror = "1.0.40"
 getopts = "0.2.21"
-ureq = "2.6.2"
+ureq = "2.7.0"
 multipart = { version = "0.18.0", default-features = false, features = [
   "client",
 ] }
