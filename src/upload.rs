@@ -190,8 +190,13 @@ impl<'a> Uploader<'a> {
 
     /// Returns the server version.
     pub fn retrieve_version(&self) -> Result<String> {
-        let mut url = Url::parse(&self.config.server.address)?;
-        url.set_path("version");
+        let mut base = Url::parse(&self.config.server.address)?;
+        if base.path().to_string().chars().last().unwrap() != '/' {
+            let path = format!("{}/", base.path().to_string());
+            base = base.join(&path)?;
+        }
+        let url = base.join("version")?;
+
         let mut request = self.client.get(url.as_str());
         if let Some(auth_token) = &self.config.server.auth_token {
             request = request.set("Authorization", auth_token);
