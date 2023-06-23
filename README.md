@@ -12,6 +12,16 @@ A CLI tool for [**rustypaste**](https://github.com/orhun/rustypaste).
 cargo install rustypaste-cli
 ```
 
+#### Features
+
+- `use-native-certs`: makes the default TLS implementation use the OS' trust store. [\*](https://github.com/algesten/ureq#https--tls--ssl) (disabled)
+
+To enable crate features, use the `--features` flag as follows:
+
+```sh
+cargo install rustypaste-cli --features use-native-certs
+```
+
 ### Arch Linux
 
 ```

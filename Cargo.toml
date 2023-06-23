@@ -16,6 +16,10 @@ default-run = "rpaste"
 name = "rpaste"
 path = "src/main.rs"
 
+[features]
+default = []
+use-native-certs = ["ureq/native-certs"]
+
 [dependencies]
 serde = { version = "1.0.164", default-features = false, features = ["derive"] }
 toml = "0.7.4"

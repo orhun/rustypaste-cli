@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    name: Build for ${{ matrix.config.TARGET }} using Rust ${{ matrix.TOOLCHAIN }} (on ${{ matrix.config.OS }})
+    name: "Build for ${{ matrix.config.TARGET }} using Rust ${{ matrix.TOOLCHAIN }} (on ${{ matrix.config.OS }}) [args: ${{ matrix.BUILD_ARGS }}]"
     runs-on: ${{ matrix.config.OS }}
     strategy:
       fail-fast: false
@@ -23,7 +23,10 @@ jobs:
           - { OS: ubuntu-latest, TARGET: "i686-unknown-linux-gnu" }
           - { OS: ubuntu-latest, TARGET: "i686-unknown-linux-musl" }
           # - { OS: ubuntu-latest, TARGET: "armv5te-unknown-linux-gnueabi" }
-          - { OS: ubuntu-latest, TARGET: "armv7-unknown-linux-gnueabihf" }
+          - {
+              OS: ubuntu-latest,
+              TARGET: "armv7-unknown-linux-gnueabihf"
+            }
           - { OS: ubuntu-latest, TARGET: "aarch64-unknown-linux-gnu" }
           - { OS: ubuntu-latest, TARGET: "aarch64-unknown-linux-musl" }
           - { OS: ubuntu-latest, TARGET: "x86_64-pc-windows-gnu" }
@@ -31,7 +34,8 @@ jobs:
           - { OS: macos-latest, TARGET: "aarch64-apple-darwin" }
           - { OS: windows-latest, TARGET: "x86_64-pc-windows-msvc" }
           - { OS: windows-latest, TARGET: "i686-pc-windows-msvc" }
-        TOOLCHAIN: [stable, beta, nightly]
+        TOOLCHAIN: [ stable, beta, nightly ]
+        BUILD_ARGS: [ "", "--features use-native-certs" ]
 
     steps:
       - name: Checkout the repository
@@ -53,7 +57,7 @@ jobs:
         with:
           use-cross: true
           command: build
-          args: --target ${{ matrix.config.TARGET }}
+          args: --target ${{ matrix.config.TARGET }} ${{ matrix.BUILD_ARGS }}
 
       - name: Check formatting
         uses: actions-rs/cargo@v1
