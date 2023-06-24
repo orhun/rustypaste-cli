@@ -191,8 +191,8 @@ impl<'a> Uploader<'a> {
     /// Returns the server version.
     pub fn retrieve_version(&self) -> Result<String> {
         let mut url = Url::parse(&self.config.server.address)?;
-        if !url.path().to_string().ends_with("/") {
-            url = url.join(&format!("{}/", url.path().to_string()))?;
+        if !url.path().to_string().ends_with('/') {
+            url = url.join(&format!("{}/", url.path()))?;
         }
         url = url.join("version")?;
 
