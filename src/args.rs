@@ -1,3 +1,4 @@
+use atty::{is, Stream};
 use getopts::Options;
 use std::env;
 use std::path::PathBuf;
@@ -68,7 +69,8 @@ impl Args {
                 && !matches.opt_present("u")
                 && !matches.opt_present("r")
                 && !matches.opt_present("V")
-                && !matches.opt_present("v"))
+                && !matches.opt_present("v")
+                && is(Stream::Stdin))
         {
             let usage = format!(
                 "\n{} {} \u{2014} {}.\
