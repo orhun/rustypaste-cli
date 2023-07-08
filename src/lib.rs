@@ -16,7 +16,7 @@ use crate::args::Args;
 use crate::config::Config;
 use crate::error::{Error, Result};
 use crate::upload::Uploader;
-use atty::{isnt, Stream};
+use is_terminal::IsTerminal;
 use colored::Colorize;
 use std::fs;
 use std::io::{self, Read};
@@ -59,7 +59,7 @@ pub fn run(args: Args) -> Result<()> {
         results.push(uploader.upload_url(url));
     } else if let Some(ref remote_url) = args.remote {
         results.push(uploader.upload_remote_url(remote_url));
-    } else if isnt(Stream::Stdin) || args.files.contains(&String::from("-")) {
+    } else if !std::io::stdin().is_terminal() || args.files.contains(&String::from("-")) {
         let mut buffer = Vec::new();
         let stdin = io::stdin();
         for bytes in stdin.bytes() {
