@@ -16,8 +16,8 @@ use crate::args::Args;
 use crate::config::Config;
 use crate::error::{Error, Result};
 use crate::upload::Uploader;
-use is_terminal::IsTerminal;
 use colored::Colorize;
+use is_terminal::IsTerminal;
 use std::fs;
 use std::io::{self, Read};
 
