@@ -1,4 +1,5 @@
 use getopts::Options;
+use is_terminal::IsTerminal;
 use std::env;
 use std::path::PathBuf;
 use std::process;
@@ -68,7 +69,8 @@ impl Args {
                 && !matches.opt_present("u")
                 && !matches.opt_present("r")
                 && !matches.opt_present("V")
-                && !matches.opt_present("v"))
+                && !matches.opt_present("v")
+                && std::io::stdin().is_terminal())
         {
             let usage = format!(
                 "\n{} {} \u{2014} {}.\

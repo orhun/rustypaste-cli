@@ -576,6 +576,7 @@ dependencies = [
  "dirs-next",
  "getopts",
  "indicatif",
+ "is-terminal",
  "multipart",
  "serde",
  "thiserror",
