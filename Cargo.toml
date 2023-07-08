@@ -33,7 +33,6 @@ multipart = { version = "0.18.0", default-features = false, features = [
 colored = "2.0.4"
 url = "2.4.0"
 indicatif = "0.17.5"
-atty = "0.2.14"
 is-terminal = "0.4.9"
 
 [profile.release]
