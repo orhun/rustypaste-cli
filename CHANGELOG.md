@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2023-07-08
+
+### Changed
+
+- Automatically detect if the data is piped (#28)
+
+Now when data is piped into `rpaste`, there is no reason to add `-` as a file.
+
+Before:
+
+```
+cat whatever.txt | rpaste -
+```
+
+After:
+
+```
+cat whatever.txt | rpaste
+```
+
+- Upgrade dependencies
+
 ## [0.5.0] - 2023-07-01
 
 ### Added
