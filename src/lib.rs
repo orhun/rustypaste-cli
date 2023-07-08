@@ -29,7 +29,7 @@ pub fn run(args: Args) -> Result<()> {
     if let Some(ref config_path) = args.config {
         config = toml::from_str(&fs::read_to_string(config_path)?)?
     } else {
-        for path in vec![
+        for path in [
             dirs_next::home_dir().map(|p| p.join(".rustypaste").join(CONFIG_FILE)),
             dirs_next::config_dir().map(|p| p.join("rustypaste").join(CONFIG_FILE)),
         ]
