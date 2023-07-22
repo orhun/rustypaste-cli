@@ -50,7 +50,7 @@ pub fn run(args: Args) -> Result<()> {
 
     let uploader = Uploader::new(&config);
     if args.print_server_version {
-        println!("rustypaste-server {}", uploader.retrieve_version()?);
+        println!("rustypaste-server {}", uploader.retrieve_version()?.trim());
         return Ok(());
     }
 
