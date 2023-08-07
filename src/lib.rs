@@ -55,7 +55,13 @@ pub fn run(args: Args) -> Result<()> {
     }
 
     if args.list_files {
-        uploader.retrieve_list()?;
+        let prettify = args.prettify
+            || config
+                .style
+                .as_ref()
+                .map(|style| style.prettify)
+                .unwrap_or(false);
+        uploader.retrieve_list(prettify)?;
         return Ok(());
     }
 

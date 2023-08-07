@@ -219,7 +219,7 @@ impl<'a> Uploader<'a> {
     }
 
     /// Retrieves and prints the files on server.
-    pub fn retrieve_list(&self) -> Result<()> {
+    pub fn retrieve_list(&self, prettify: bool) -> Result<()> {
         let mut url = Url::parse(&self.config.server.address)?;
         if !url.path().to_string().ends_with('/') {
             url = url.join(&format!("{}/", url.path()))?;
@@ -230,6 +230,17 @@ impl<'a> Uploader<'a> {
         if let Some(auth_token) = &self.config.server.auth_token {
             request = request.set("Authorization", auth_token);
         }
+
+        if !prettify {
+            let result = request
+                .call()
+                .map_err(|e| Error::RequestError(Box::new(e)))?
+                .into_string()?;
+            println!("{result}");
+
+            return Ok(());
+        }
+
         let json: Vec<ListItem> = request
             .call()
             .map_err(|e| Error::RequestError(Box::new(e)))?
