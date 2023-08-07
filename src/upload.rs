@@ -246,7 +246,7 @@ impl<'a> Uploader<'a> {
             .map_err(|e| Error::RequestError(Box::new(e)))?
             .into_json()?;
 
-        if json.len() == 0 {
+        if json.is_empty() {
             return Ok(());
         }
 
