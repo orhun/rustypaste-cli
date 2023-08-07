@@ -54,6 +54,11 @@ pub fn run(args: Args) -> Result<()> {
         return Ok(());
     }
 
+    if args.list_files {
+        uploader.retrieve_list()?;
+        return Ok(());
+    }
+
     let mut results = Vec::new();
     if let Some(ref url) = args.url {
         results.push(uploader.upload_url(url));

@@ -2,6 +2,7 @@ use crate::config::Config;
 use crate::error::{Error, Result};
 use indicatif::{ProgressBar, ProgressStyle};
 use multipart::client::lazy::Multipart;
+use serde::Deserialize;
 use std::io::{Read, Result as IoResult};
 use std::time::Duration;
 use ureq::Error as UreqError;
@@ -13,6 +14,17 @@ const DEFAULT_FILE_NAME: Option<&str> = Some("file");
 
 /// HTTP header to use for specifying expiration times.
 const EXPIRATION_HEADER: &str = "expire";
+
+/// File entry item for list endpoint.
+#[derive(Deserialize, Debug)]
+pub struct ListItem {
+    /// Uploaded file name.
+    pub file_name: String,
+    /// Size of the file in bytes.
+    pub file_size: u64,
+    /// ISO8601 formatted date-time string of the expiration timestamp if one exists for this file.
+    pub expires_at_utc: Option<String>,
+}
 
 /// Wrapper around raw data and result.
 #[derive(Debug)]
@@ -204,5 +216,62 @@ impl<'a> Uploader<'a> {
             .call()
             .map_err(|e| Error::RequestError(Box::new(e)))?
             .into_string()?)
+    }
+
+    /// Retrieves and prints the files on server.
+    pub fn retrieve_list(&self) -> Result<()> {
+        let mut url = Url::parse(&self.config.server.address)?;
+        if !url.path().to_string().ends_with('/') {
+            url = url.join(&format!("{}/", url.path()))?;
+        }
+        url = url.join("list")?;
+
+        let mut request = self.client.get(url.as_str());
+        if let Some(auth_token) = &self.config.server.auth_token {
+            request = request.set("Authorization", auth_token);
+        }
+        let json: Vec<ListItem> = request
+            .call()
+            .map_err(|e| Error::RequestError(Box::new(e)))?
+            .into_json()?;
+
+        if json.len() == 0 {
+            return Ok(());
+        }
+
+        let mut max_filesize: u64 = 1000;
+        let mut max_filename_len = 0;
+        for file_info in json.iter() {
+            if file_info.file_size > max_filesize {
+                max_filesize = file_info.file_size;
+            }
+
+            if file_info.file_name.len() > max_filename_len {
+                max_filename_len = file_info.file_name.len()
+            }
+        }
+        let filename_width = max_filename_len;
+        let filesize_width = max_filesize.to_string().len();
+
+        println!(
+            "{:^filename_width$} | {:^filesize_width$} | {:^19}",
+            "Name", "Size", "Expiry (UTC)"
+        );
+        println!(
+            "{:-<filename_width$}-|-{:->filesize_width$}-|--------------------",
+            "", ""
+        );
+        for file_info in json.iter() {
+            let mut expiry: &String = &"".to_string();
+            if let Some(exp) = &file_info.expires_at_utc {
+                expiry = exp;
+            }
+            println!(
+                "{:<filename_width$} | {:>filesize_width$} | {}",
+                file_info.file_name, file_info.file_size, expiry
+            );
+        }
+
+        Ok(())
     }
 }
