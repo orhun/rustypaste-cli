@@ -200,13 +200,20 @@ impl<'a> Uploader<'a> {
         result
     }
 
-    /// Returns the server version.
-    pub fn retrieve_version(&self) -> Result<String> {
+    /// Returns a valid request URL for an endpoint.
+    pub fn retrieve_url(&self, endpoint: &str) -> Result<Url> {
         let mut url = Url::parse(&self.config.server.address)?;
         if !url.path().to_string().ends_with('/') {
             url = url.join(&format!("{}/", url.path()))?;
         }
-        url = url.join("version")?;
+        url = url.join(endpoint)?;
+
+        Ok(url)
+    }
+
+    /// Returns the server version.
+    pub fn retrieve_version(&self) -> Result<String> {
+        let url = self.retrieve_url("version")?;
 
         let mut request = self.client.get(url.as_str());
         if let Some(auth_token) = &self.config.server.auth_token {
@@ -218,19 +225,13 @@ impl<'a> Uploader<'a> {
             .into_string()?)
     }
 
-    // pub fn retrieve_list<Output: std::io::Write>(&self, output: &mut Output, prettify: bool) -> Result<()> {
-
     /// Retrieves and prints the files on server.
     pub fn retrieve_list<Output: std::io::Write>(
         &self,
         output: &mut Output,
         prettify: bool,
     ) -> Result<()> {
-        let mut url = Url::parse(&self.config.server.address)?;
-        if !url.path().to_string().ends_with('/') {
-            url = url.join(&format!("{}/", url.path()))?;
-        }
-        url = url.join("list")?;
+        let url = self.retrieve_url("list")?;
 
         let mut request = self.client.get(url.as_str());
         if let Some(auth_token) = &self.config.server.auth_token {
