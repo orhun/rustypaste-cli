@@ -61,7 +61,7 @@ pub fn run(args: Args) -> Result<()> {
                 .as_ref()
                 .map(|style| style.prettify)
                 .unwrap_or(false);
-        uploader.retrieve_list(prettify)?;
+        uploader.retrieve_list(&mut io::stdout(), prettify)?;
         return Ok(());
     }
 

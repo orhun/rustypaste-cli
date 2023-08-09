@@ -218,8 +218,14 @@ impl<'a> Uploader<'a> {
             .into_string()?)
     }
 
+    // pub fn retrieve_list<Output: std::io::Write>(&self, output: &mut Output, prettify: bool) -> Result<()> {
+
     /// Retrieves and prints the files on server.
-    pub fn retrieve_list(&self, prettify: bool) -> Result<()> {
+    pub fn retrieve_list<Output: std::io::Write>(
+        &self,
+        output: &mut Output,
+        prettify: bool,
+    ) -> Result<()> {
         let mut url = Url::parse(&self.config.server.address)?;
         if !url.path().to_string().ends_with('/') {
             url = url.join(&format!("{}/", url.path()))?;
@@ -236,7 +242,7 @@ impl<'a> Uploader<'a> {
                 .call()
                 .map_err(|e| Error::RequestError(Box::new(e)))?
                 .into_string()?;
-            println!("{result}");
+            writeln!(output, "{result}")?;
 
             return Ok(());
         }
@@ -264,23 +270,26 @@ impl<'a> Uploader<'a> {
         let filename_width = max_filename_len;
         let filesize_width = max_filesize.to_string().len();
 
-        println!(
+        writeln!(
+            output,
             "{:^filename_width$} | {:^filesize_width$} | {:^19}",
             "Name", "Size", "Expiry (UTC)"
-        );
-        println!(
+        )?;
+        writeln!(
+            output,
             "{:-<filename_width$}-|-{:->filesize_width$}-|--------------------",
             "", ""
-        );
+        )?;
         for file_info in json.iter() {
             let mut expiry: &String = &"".to_string();
             if let Some(exp) = &file_info.expires_at_utc {
                 expiry = exp;
             }
-            println!(
+            writeln!(
+                output,
                 "{:<filename_width$} | {:>filesize_width$} | {}",
                 file_info.file_name, file_info.file_size, expiry
-            );
+            )?;
         }
 
         Ok(())
