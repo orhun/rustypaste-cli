@@ -242,14 +242,14 @@ impl<'a> Uploader<'a> {
             .iter()
             .map(|v| v.file_name.len())
             .max()
-            .unwrap_or_default() as usize;
+            .unwrap_or_default();
         let filesize_width = items
             .iter()
             .map(|v| v.file_size)
             .max()
             .unwrap_or_default()
             .to_string()
-            .len() as usize;
+            .len();
         writeln!(
             output,
             "{:^filename_width$} | {:^filesize_width$} | {:^19}",
