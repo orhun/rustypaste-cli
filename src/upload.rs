@@ -238,41 +238,46 @@ impl<'a> Uploader<'a> {
             return Ok(());
         }
         let items: Vec<ListItem> = response.into_json()?;
-        let filename_width = items
-            .iter()
-            .map(|v| v.file_name.len())
-            .max()
-            .unwrap_or_default();
-        let filesize_width = items
-            .iter()
-            .map(|v| v.file_size)
-            .max()
-            .unwrap_or_default()
-            .to_string()
-            .len();
-        writeln!(
-            output,
-            "{:^filename_width$} | {:^filesize_width$} | {:^19}",
-            "Name", "Size", "Expiry (UTC)"
-        )?;
-        writeln!(
-            output,
-            "{:-<filename_width$}-|-{:->filesize_width$}-|--------------------",
-            "", ""
-        )?;
-        items.iter().try_for_each(|file_info| {
+        if !items.is_empty() {
+            let filename_width = items
+                .iter()
+                .map(|v| v.file_name.len())
+                .max()
+                .unwrap_or_default();
+            let mut filesize_width = items
+                .iter()
+                .map(|v| v.file_size)
+                .max()
+                .unwrap_or_default()
+                .to_string()
+                .len();
+            if filesize_width < 4 {
+                filesize_width = 4;
+            }
             writeln!(
                 output,
-                "{:<filename_width$} | {:>filesize_width$} | {}",
-                file_info.file_name,
-                file_info.file_size,
-                file_info
-                    .expires_at_utc
-                    .as_ref()
-                    .cloned()
-                    .unwrap_or_default()
-            )
-        })?;
+                "{:^filename_width$} | {:^filesize_width$} | {:^19}",
+                "Name", "Size", "Expiry (UTC)"
+            )?;
+            writeln!(
+                output,
+                "{:-<filename_width$}-|-{:->filesize_width$}-|--------------------",
+                "", ""
+            )?;
+            items.iter().try_for_each(|file_info| {
+                writeln!(
+                    output,
+                    "{:<filename_width$} | {:>filesize_width$} | {}",
+                    file_info.file_name,
+                    file_info.file_size,
+                    file_info
+                        .expires_at_utc
+                        .as_ref()
+                        .cloned()
+                        .unwrap_or_default()
+                )
+            })?;
+        }
         Ok(())
     }
 }
