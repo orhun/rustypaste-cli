@@ -3,7 +3,7 @@ use crate::error::{Error, Result};
 use indicatif::{ProgressBar, ProgressStyle};
 use multipart::client::lazy::Multipart;
 use serde::Deserialize;
-use std::io::{Read, Result as IoResult};
+use std::io::{Read, Result as IoResult, Write};
 use std::time::Duration;
 use ureq::Error as UreqError;
 use ureq::{Agent, AgentBuilder};
@@ -207,14 +207,12 @@ impl<'a> Uploader<'a> {
             url = url.join(&format!("{}/", url.path()))?;
         }
         url = url.join(endpoint)?;
-
         Ok(url)
     }
 
     /// Returns the server version.
     pub fn retrieve_version(&self) -> Result<String> {
         let url = self.retrieve_url("version")?;
-
         let mut request = self.client.get(url.as_str());
         if let Some(auth_token) = &self.config.server.auth_token {
             request = request.set("Authorization", auth_token);
@@ -226,51 +224,32 @@ impl<'a> Uploader<'a> {
     }
 
     /// Retrieves and prints the files on server.
-    pub fn retrieve_list<Output: std::io::Write>(
-        &self,
-        output: &mut Output,
-        prettify: bool,
-    ) -> Result<()> {
+    pub fn retrieve_list<Output: Write>(&self, output: &mut Output, prettify: bool) -> Result<()> {
         let url = self.retrieve_url("list")?;
-
         let mut request = self.client.get(url.as_str());
         if let Some(auth_token) = &self.config.server.auth_token {
             request = request.set("Authorization", auth_token);
         }
-
-        if !prettify {
-            let result = request
-                .call()
-                .map_err(|e| Error::RequestError(Box::new(e)))?
-                .into_string()?;
-            writeln!(output, "{result}")?;
-
-            return Ok(());
-        }
-
-        let json: Vec<ListItem> = request
+        let response = request
             .call()
-            .map_err(|e| Error::RequestError(Box::new(e)))?
-            .into_json()?;
-
-        if json.is_empty() {
+            .map_err(|e| Error::RequestError(Box::new(e)))?;
+        if !prettify {
+            writeln!(output, "{}", response.into_string()?)?;
             return Ok(());
         }
-
-        let mut max_filesize: u64 = 1000;
-        let mut max_filename_len = 0;
-        for file_info in json.iter() {
-            if file_info.file_size > max_filesize {
-                max_filesize = file_info.file_size;
-            }
-
-            if file_info.file_name.len() > max_filename_len {
-                max_filename_len = file_info.file_name.len()
-            }
-        }
-        let filename_width = max_filename_len;
-        let filesize_width = max_filesize.to_string().len();
-
+        let items: Vec<ListItem> = response.into_json()?;
+        let filename_width = items
+            .iter()
+            .map(|v| v.file_name.len())
+            .max()
+            .unwrap_or_default() as usize;
+        let filesize_width = items
+            .iter()
+            .map(|v| v.file_size)
+            .max()
+            .unwrap_or_default()
+            .to_string()
+            .len() as usize;
         writeln!(
             output,
             "{:^filename_width$} | {:^filesize_width$} | {:^19}",
@@ -281,18 +260,19 @@ impl<'a> Uploader<'a> {
             "{:-<filename_width$}-|-{:->filesize_width$}-|--------------------",
             "", ""
         )?;
-        for file_info in json.iter() {
-            let mut expiry: &String = &"".to_string();
-            if let Some(exp) = &file_info.expires_at_utc {
-                expiry = exp;
-            }
+        items.iter().try_for_each(|file_info| {
             writeln!(
                 output,
                 "{:<filename_width$} | {:>filesize_width$} | {}",
-                file_info.file_name, file_info.file_size, expiry
-            )?;
-        }
-
+                file_info.file_name,
+                file_info.file_size,
+                file_info
+                    .expires_at_utc
+                    .as_ref()
+                    .cloned()
+                    .unwrap_or_default()
+            )
+        })?;
         Ok(())
     }
 }
