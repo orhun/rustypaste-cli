@@ -27,6 +27,8 @@ pub struct Args {
     pub prettify: bool,
     /// Whether if the server version should be printed.
     pub print_server_version: bool,
+    /// List files on the server (file name, file size, expiry timestamp).
+    pub list_files: bool,
 }
 
 impl Args {
@@ -36,6 +38,7 @@ impl Args {
         opts.optflag("h", "help", "prints help information");
         opts.optflag("v", "version", "prints version information");
         opts.optflag("V", "server-version", "retrieves the server version");
+        opts.optflag("l", "list", "lists files on the server");
         opts.optflag("o", "oneshot", "generates one shot links");
         opts.optflag("p", "pretty", "prettifies the output");
         opts.optopt("c", "config", "sets the configuration file", "CONFIG");
@@ -69,6 +72,7 @@ impl Args {
                 && !matches.opt_present("u")
                 && !matches.opt_present("r")
                 && !matches.opt_present("V")
+                && !matches.opt_present("l")
                 && !matches.opt_present("v")
                 && std::io::stdin().is_terminal())
         {
@@ -106,6 +110,7 @@ impl Args {
             expire: matches.opt_str("e"),
             prettify: matches.opt_present("p"),
             print_server_version: matches.opt_present("V"),
+            list_files: matches.opt_present("l"),
             files: matches.free,
         }
     }

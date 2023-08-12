@@ -54,6 +54,17 @@ pub fn run(args: Args) -> Result<()> {
         return Ok(());
     }
 
+    if args.list_files {
+        let prettify = args.prettify
+            || config
+                .style
+                .as_ref()
+                .map(|style| style.prettify)
+                .unwrap_or(false);
+        uploader.retrieve_list(&mut io::stdout(), prettify)?;
+        return Ok(());
+    }
+
     let mut results = Vec::new();
     if let Some(ref url) = args.url {
         results.push(uploader.upload_url(url));

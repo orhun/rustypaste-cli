@@ -53,16 +53,18 @@ cargo build --release
 `rpaste [options] <file(s)>`
 
 ```
--h, --help          prints help information
--v, --version       prints version information
--o, --oneshot       generates one shot links
--p, --pretty        prettifies the output
--c, --config CONFIG sets the configuration file
--s, --server SERVER sets the address of the rustypaste server
--a, --auth TOKEN    sets the authentication token
--u, --url URL       sets the URL to shorten
--r, --remote URL    sets the remote URL for uploading
--e, --expire TIME   sets the expiration time for the link
+-h, --help           prints help information
+-v, --version        prints version information
+-V, --server-version retrieves the server version
+-l, --list           lists files on the server
+-o, --oneshot        generates one shot links
+-p, --pretty         prettifies the output
+-c, --config CONFIG  sets the configuration file
+-s, --server SERVER  sets the address of the rustypaste server
+-a, --auth TOKEN     sets the authentication token
+-u, --url URL        sets the URL to shorten
+-r, --remote URL     sets the remote URL for uploading
+-e, --expire TIME    sets the expiration time for the link
 ```
 
 ### Set credentials
@@ -122,6 +124,14 @@ rpaste -e 1hour -u https://example.com/expire/1hour
 ```
 
 \* Supported units: `ns`, `us`, `ms`, `sec`, `min`, `hours`, `days`, `weeks`, `months`, `years`
+
+### List uploaded files
+
+```sh
+rpaste -l
+```
+
+\* Use `-p` for table output instead of JSON.
 
 ### Extras
 
