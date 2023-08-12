@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2023-08-12
+
+### Added
+
+- Added `-l` flag for retrieving file list from the server (#45)
+
+For example:
+
+```sh
+rpaste -l  # JSON output
+rpaste -lp # Table output (pretty)
+```
+
+`[server].expose_list` option should be set to `true` on `rustypaste` server for this flag to work.
+
+### Removed
+
+- Remove extra newline from version output (#36)
+
 ## [0.6.0] - 2023-07-08
 
 ### Changed
