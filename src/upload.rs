@@ -239,7 +239,7 @@ impl<'a> Uploader<'a> {
         }
         let items: Vec<ListItem> = response.into_json()?;
         if items.is_empty() {
-            writeln!(output, "No files on server.")?;
+            writeln!(output, "No files on server :(")?;
             return Ok(());
         }
         let filename_width = items
