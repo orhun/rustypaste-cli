@@ -19,6 +19,8 @@ pub struct ServerConfig {
     pub address: String,
     /// Token for authentication.
     pub auth_token: Option<String>,
+    /// Token for deleting files.
+    pub delete_token: Option<String>,
 }
 
 /// Paste configuration.
@@ -45,6 +47,9 @@ impl Config {
         }
         if args.auth.is_some() {
             self.server.auth_token = args.auth.as_ref().cloned();
+            if args.delete {
+                self.server.delete_token = args.auth.as_ref().cloned();
+            }
         }
         if args.oneshot {
             self.paste.oneshot = Some(true);

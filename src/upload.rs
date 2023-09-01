@@ -191,12 +191,53 @@ impl<'a> Uploader<'a> {
             }
             Err(UreqError::Status(code, response)) => Err(Error::UploadError(format!(
                 "{} (status code: {})",
-                response.into_string()?,
+                response.into_string()?.trim(),
                 code
             ))),
             Err(e) => Err(Error::RequestError(Box::new(e))),
         };
         progress_bar.finish_and_clear();
+        result
+    }
+
+    /// Wrapper: Delete the given file from the server.
+    pub fn delete_file(&self, file: &'a str) -> UploadResult<'a, String> {
+        UploadResult(file, self.delete(file))
+    }
+
+    /// Delete the given file from the server.
+    fn delete(&self, file: &'a str) -> Result<String> {
+        let url = self.retrieve_url(file)?;
+        let mut request = self.client.delete(url.as_str());
+        if let Some(delete_token) = &self.config.server.delete_token {
+            request = request.set("Authorization", delete_token);
+        }
+        let result = match request.call() {
+            Ok(response) => {
+                let status = response.status();
+                if status == 200 {
+                    Ok("Deleted".to_string())
+                } else {
+                    Err(Error::DeleteError(format!(
+                        "unknown error (status code: {status})"
+                    )))
+                }
+            }
+            Err(UreqError::Status(code, response)) => {
+                if code == 404 {
+                    Err(Error::DeleteError(
+                        response.into_string()?.trim().to_string(),
+                    ))
+                } else {
+                    Err(Error::DeleteError(format!(
+                        "{} (status code: {})",
+                        response.into_string()?.trim(),
+                        code
+                    )))
+                }
+            }
+            Err(e) => Err(Error::RequestError(Box::new(e))),
+        };
         result
     }
 
