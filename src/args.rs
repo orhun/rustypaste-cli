@@ -1,6 +1,6 @@
 use getopts::Options;
-use is_terminal::IsTerminal;
 use std::env;
+use std::io::IsTerminal;
 use std::path::PathBuf;
 use std::process;
 
