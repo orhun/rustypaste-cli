@@ -11,7 +11,7 @@ pub struct Args {
     pub config: Option<PathBuf>,
     /// Server address.
     pub server: Option<String>,
-    /// Authentication token.
+    /// Authentication or delete token.
     pub auth: Option<String>,
     /// URL to shorten.
     pub url: Option<String>,
@@ -51,7 +51,12 @@ impl Args {
             "sets the address of the rustypaste server",
             "SERVER",
         );
-        opts.optopt("a", "auth", "sets the authentication token", "TOKEN");
+        opts.optopt(
+            "a",
+            "auth",
+            "sets the authentication or delete token",
+            "TOKEN",
+        );
         opts.optopt("u", "url", "sets the URL to shorten", "URL");
         opts.optopt("r", "remote", "sets the remote URL for uploading", "URL");
         opts.optopt(

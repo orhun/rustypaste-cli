@@ -57,11 +57,12 @@ cargo build --release
 -v, --version        prints version information
 -V, --server-version retrieves the server version
 -l, --list           lists files on the server
+-d, --delete         delete files from server
 -o, --oneshot        generates one shot links
 -p, --pretty         prettifies the output
 -c, --config CONFIG  sets the configuration file
 -s, --server SERVER  sets the address of the rustypaste server
--a, --auth TOKEN     sets the authentication token
+-a, --auth TOKEN     sets the authentication or delete token
 -u, --url URL        sets the URL to shorten
 -r, --remote URL     sets the remote URL for uploading
 -e, --expire TIME    sets the expiration time for the link
@@ -132,6 +133,12 @@ rpaste -l
 ```
 
 \* Use `-p` for table output instead of JSON.
+
+### Delete files from server
+
+```sh
+rpaste -d awesome.UA86.txt other.JSNI.txt
+```
 
 ### Extras
 
