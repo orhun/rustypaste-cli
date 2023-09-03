@@ -215,8 +215,9 @@ impl<'a> Uploader<'a> {
         let result = match request.call() {
             Ok(response) => {
                 let status = response.status();
+                let response_text = response.into_string()?;
                 if status == 200 {
-                    Ok("Deleted".to_string())
+                    Ok(response_text)
                 } else {
                     Err(Error::DeleteError(format!(
                         "unknown error (status code: {status})"
