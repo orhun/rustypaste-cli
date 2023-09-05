@@ -34,7 +34,7 @@ jobs:
           - { OS: macos-latest, TARGET: "aarch64-apple-darwin" }
           - { OS: windows-latest, TARGET: "x86_64-pc-windows-msvc" }
           - { OS: windows-latest, TARGET: "i686-pc-windows-msvc" }
-        TOOLCHAIN: [ stable, beta, nightly ]
+        TOOLCHAIN: [ stable, nightly ]
         BUILD_ARGS: [ "", "--features use-native-certs" ]
 
     steps:
