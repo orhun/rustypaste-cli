@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2023-09-05
+
+### Added
+
+- Add option to delete file(s) from server (#54)
+
+`rustpaste` now supports deleting files starting from [`0.14.0`](https://github.com/orhun/rustypaste/releases/tag/v0.14.0) thus a new flag (`-d`) is added to `rpaste`.
+
+```sh
+rpaste -d file.txt
+```
+
+To use this feature, set tokens for both `rustypaste` and `rustypaste-cli` in the configuration file via `delete_tokens` / `delete_token` option.
+
+### Changed
+
+- Use IsTerminal from stdlib (#55)
+- Disable Rust beta builds
+- Upgrade dependencies
+
 ## [0.7.0] - 2023-08-12
 
 ### Added
