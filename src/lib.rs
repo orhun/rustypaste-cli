@@ -79,7 +79,11 @@ pub fn run(args: Args) -> Result<()> {
         results.push(uploader.upload_stream(&*buffer));
     } else {
         for file in args.files.iter() {
-            results.push(uploader.upload_file(file))
+            if !args.delete {
+                results.push(uploader.upload_file(file))
+            } else {
+                results.push(uploader.delete_file(file))
+            }
         }
     }
     let prettify = args.prettify

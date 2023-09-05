@@ -15,6 +15,9 @@ pub enum Error {
     /// Error that might occur while uploading files.
     #[error("Upload error: `{0}`")]
     UploadError(String),
+    /// Error that might occur while deleting files from server.
+    #[error("Delete error: `{0}`")]
+    DeleteError(String),
     /// Error that might occur when no server address is provided.
     #[error("No rustypaste server address is given.")]
     NoServerAddressError,
