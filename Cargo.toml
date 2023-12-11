@@ -30,7 +30,7 @@ ureq = { version = "2.8.0", features = ["json"] }
 multipart = { version = "0.18.0", default-features = false, features = [
   "client",
 ] }
-colored = "2.0.4"
+colored = "2.1.0"
 url = "2.4.1"
 indicatif = "0.17.6"
 
