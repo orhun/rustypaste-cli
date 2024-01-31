@@ -30,6 +30,9 @@ pub struct PasteConfig {
     pub oneshot: Option<bool>,
     /// Expiration time for the link.
     pub expire: Option<String>,
+    /// Filename.
+    #[serde(skip_deserializing)]
+    pub filename: Option<String>,
 }
 
 /// Style configuration.
@@ -56,6 +59,9 @@ impl Config {
         }
         if args.expire.is_some() {
             self.paste.expire = args.expire.as_ref().cloned();
+        }
+        if args.filename.is_some() {
+            self.paste.filename = args.filename.as_ref().cloned();
         }
     }
 }
