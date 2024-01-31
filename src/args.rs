@@ -67,7 +67,7 @@ impl Args {
             "sets the expiration time for the link",
             "TIME",
         );
-        opts.optopt("n", "filename", "specify filename header", "NAME");
+        opts.optopt("n", "filename", "sets and overrides the filename", "NAME");
 
         let env_args: Vec<String> = env::args().collect();
         let matches = match opts.parse(&env_args[1..]) {
