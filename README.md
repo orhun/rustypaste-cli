@@ -147,6 +147,8 @@ rpaste -d awesome.UA86.txt other.JSNI.txt
 rpaste -n filename-on-server.txt awesome.txt
 ```
 
+\* rustypaste 0.15.0 is required for this argument to work, otherwise the filename will not be overridden.
+
 ### Extras
 
 - Show a _prettier_ output: `rpaste -p [...]`
