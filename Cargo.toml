@@ -32,7 +32,7 @@ multipart = { version = "0.18.0", default-features = false, features = [
 ] }
 colored = "2.1.0"
 url = "2.4.1"
-indicatif = "0.17.6"
+indicatif = "0.17.8"
 
 [profile.release]
 opt-level = 3
