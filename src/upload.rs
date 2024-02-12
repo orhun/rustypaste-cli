@@ -15,6 +15,9 @@ const DEFAULT_FILE_NAME: Option<&str> = Some("file");
 /// HTTP header to use for specifying expiration times.
 const EXPIRATION_HEADER: &str = "expire";
 
+/// HTTP header for specifying the filename.
+const FILENAME_HEADER: &str = "filename";
+
 /// File entry item for list endpoint.
 #[derive(Deserialize, Debug)]
 pub struct ListItem {
@@ -164,6 +167,9 @@ impl<'a> Uploader<'a> {
         }
         if let Some(expiration_time) = &self.config.paste.expire {
             request = request.set(EXPIRATION_HEADER, expiration_time);
+        }
+        if let Some(filename) = &self.config.paste.filename {
+            request = request.set(FILENAME_HEADER, filename);
         }
         let progress_bar = ProgressBar::new_spinner();
         progress_bar.enable_steady_tick(Duration::from_millis(80));

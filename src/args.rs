@@ -31,6 +31,8 @@ pub struct Args {
     pub list_files: bool,
     /// Delete files from server.
     pub delete: bool,
+    /// Send filename header (give uploaded file a specific name).
+    pub filename: Option<String>,
 }
 
 impl Args {
@@ -65,6 +67,7 @@ impl Args {
             "sets the expiration time for the link",
             "TIME",
         );
+        opts.optopt("n", "filename", "sets and overrides the filename", "NAME");
 
         let env_args: Vec<String> = env::args().collect();
         let matches = match opts.parse(&env_args[1..]) {
@@ -121,6 +124,7 @@ impl Args {
             print_server_version: matches.opt_present("V"),
             list_files: matches.opt_present("l"),
             delete: matches.opt_present("d"),
+            filename: matches.opt_str("n"),
             files: matches.free,
         }
     }
