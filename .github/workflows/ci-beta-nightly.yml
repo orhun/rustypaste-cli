@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-beta-nightly:
-    name: "Build for ${{ matrix.config.TARGET }} using Rust ${{ matrix.TOOLCHAIN }} (on ${{ matrix.config.OS }}) [args: ${{ matrix.BUILD_ARGS }}]"
+    name: "Build for ${{ matrix.config.TARGET }} (on ${{ matrix.config.OS }}) [args: ${{ matrix.BUILD_ARGS }}]"
     runs-on: ${{ matrix.config.OS }}
     strategy:
       fail-fast: false
