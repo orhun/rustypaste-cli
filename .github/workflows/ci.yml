@@ -55,7 +55,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Build
-        run: cargo build --target ${{ matrix.config.TARGET }} ${{ matrix.BUILD_ARGS }}
+        run: cross build --target ${{ matrix.config.TARGET }} ${{ matrix.BUILD_ARGS }}
 
       - name: Check formatting
         run: cargo fmt -- --check --verbose
