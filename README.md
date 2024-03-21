@@ -66,6 +66,7 @@ cargo build --release
 -u, --url URL        sets the URL to shorten
 -r, --remote URL     sets the remote URL for uploading
 -e, --expire TIME    sets the expiration time for the link
+-n, --filename NAME  sets and overrides the filename
 ```
 
 ### Set credentials
@@ -139,6 +140,14 @@ rpaste -l
 ```sh
 rpaste -d awesome.UA86.txt other.JSNI.txt
 ```
+
+### Override the filename
+
+```sh
+rpaste -n filename-on-server.txt awesome.txt
+```
+
+\* rustypaste >=0.15.0 is required for this argument to work, otherwise the filename will not be overridden.
 
 ### Extras
 

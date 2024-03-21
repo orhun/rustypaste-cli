@@ -72,10 +72,8 @@ pub fn run(args: Args) -> Result<()> {
         results.push(uploader.upload_remote_url(remote_url));
     } else if !std::io::stdin().is_terminal() || args.files.contains(&String::from("-")) {
         let mut buffer = Vec::new();
-        let stdin = io::stdin();
-        for bytes in stdin.bytes() {
-            buffer.push(bytes?);
-        }
+        let mut stdin = io::stdin();
+        stdin.read_to_end(&mut buffer)?;
         results.push(uploader.upload_stream(&*buffer));
     } else {
         for file in args.files.iter() {
