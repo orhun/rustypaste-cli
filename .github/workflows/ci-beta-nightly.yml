@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: Build Test (Beta and Nightly)
 
 on:
   push:
@@ -7,12 +7,10 @@ on:
   pull_request:
     branches:
       - master
-  schedule:
-    - cron: "0 0 * * 0"
 
 jobs:
-  build:
-    name: "Build for ${{ matrix.config.TARGET }} using Rust ${{ matrix.TOOLCHAIN }} (on ${{ matrix.config.OS }}) [args: ${{ matrix.BUILD_ARGS }}]"
+  build-beta-nightly:
+    name: "Build for ${{ matrix.config.TARGET }} (on ${{ matrix.config.OS }}) [args: ${{ matrix.BUILD_ARGS }}]"
     runs-on: ${{ matrix.config.OS }}
     strategy:
       fail-fast: false
@@ -29,12 +27,12 @@ jobs:
             }
           - { OS: ubuntu-latest, TARGET: "aarch64-unknown-linux-gnu" }
           - { OS: ubuntu-latest, TARGET: "aarch64-unknown-linux-musl" }
-          - { OS: ubuntu-latest, TARGET: "x86_64-pc-windows-gnu" }
+          # - { OS: ubuntu-latest, TARGET: "x86_64-pc-windows-gnu" }
           - { OS: macos-latest, TARGET: "x86_64-apple-darwin" }
           - { OS: macos-latest, TARGET: "aarch64-apple-darwin" }
           - { OS: windows-latest, TARGET: "x86_64-pc-windows-msvc" }
           - { OS: windows-latest, TARGET: "i686-pc-windows-msvc" }
-        TOOLCHAIN: [ stable ]
+        TOOLCHAIN: [ beta, nightly ]
         BUILD_ARGS: [ "", "--features use-native-certs" ]
 
     steps:
@@ -42,34 +40,19 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Rust
-        uses: dtolnay/rust-toolchain@master
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.TOOLCHAIN }}
           target: ${{ matrix.config.TARGET }}
+          override: true
           components: rustfmt, clippy
 
       - name: Cache Cargo dependencies
         uses: Swatinem/rust-cache@v2
 
-      - name: Install cross
-        uses: taiki-e/install-action@cross
-
       - name: Build
-        run: cross build --target ${{ matrix.config.TARGET }} ${{ matrix.BUILD_ARGS }}
-
-      - name: Check formatting
-        run: cargo fmt -- --check --verbose
-
-      - name: Check lints
-        run: cargo clippy --tests --verbose -- -D warnings
-
-  audit:
-    name: Perform audit for security
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v4
-      - name: Run cargo-audit
-        uses: rustsec/audit-check@v1.4.1
+        uses: actions-rs/cargo@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          use-cross: true
+          command: build
+          args: --target ${{ matrix.config.TARGET }} ${{ matrix.BUILD_ARGS }}
