@@ -21,18 +21,18 @@ default = []
 use-native-certs = ["ureq/native-certs"]
 
 [dependencies]
-serde = { version = "1.0.193", default-features = false, features = ["derive"] }
-toml = "0.8.4"
+serde = { version = "1.0.197", default-features = false, features = ["derive"] }
+toml = "0.8.12"
 dirs-next = "2.0.0"
-thiserror = "1.0.53"
+thiserror = "1.0.58"
 getopts = "0.2.21"
-ureq = { version = "2.8.0", features = ["json"] }
+ureq = { version = "2.9.6", features = ["json"] }
 multipart = { version = "0.18.0", default-features = false, features = [
   "client",
 ] }
 colored = "2.1.0"
-url = "2.4.1"
-indicatif = "0.17.6"
+url = "2.5.0"
+indicatif = "0.17.8"
 
 [profile.release]
 opt-level = 3
