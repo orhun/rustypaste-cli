@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2024-03-27
+
+### Added
+
+- Add argument to specify filename by @tessus in [#88](https://github.com/orhun/rustypaste-cli/pull/88)
+
+`rustypaste` >=0.15.0 supports overriding the file name by using `filename` header. You can also use this functionality in `rpaste` as follows:
+
+```sh
+rpaste -n filename-on-server.txt awesome.txt
+```
+
+### Changed
+
+- Simplify reading content from stdin by @tranzystorekk in [#96](https://github.com/orhun/rustypaste-cli/pull/96)
+- Split workflow into stable and beta/nightly by @tessus in [#99](https://github.com/orhun/rustypaste-cli/pull/99)
+- Get rid of the unmaintained actions by @tessus in [#102](https://github.com/orhun/rustypaste-cli/pull/102)
+- Add Mergify config by @orhun
+- Bump dependencies by @orhun
+
+### Removed
+
+- Remove deprecated actions by @tessus in [#101](https://github.com/orhun/rustypaste-cli/pull/101)
+
+### New Contributors
+
+- @tranzystorekk made their first contribution in [#96](https://github.com/orhun/rustypaste-cli/pull/96)
+
 ## [0.8.0] - 2023-09-05
 
 ### Added
