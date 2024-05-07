@@ -24,7 +24,7 @@ use-native-certs = ["ureq/native-certs"]
 serde = { version = "1.0.198", default-features = false, features = ["derive"] }
 toml = "0.8.12"
 dirs-next = "2.0.0"
-thiserror = "1.0.58"
+thiserror = "1.0.60"
 getopts = "0.2.21"
 ureq = { version = "2.9.6", features = ["json"] }
 multipart = { version = "0.18.0", default-features = false, features = [
