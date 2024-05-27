@@ -22,7 +22,7 @@ use-native-certs = ["ureq/native-certs"]
 
 [dependencies]
 serde = { version = "1.0.203", default-features = false, features = ["derive"] }
-toml = "0.8.12"
+toml = "0.8.13"
 dirs-next = "2.0.0"
 thiserror = "1.0.58"
 getopts = "0.2.21"
