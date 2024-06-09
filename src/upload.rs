@@ -25,8 +25,15 @@ pub struct ListItem {
     pub file_name: String,
     /// Size of the file in bytes.
     pub file_size: u64,
+    /// ISO8601 formatted date-time string of the creation timestamp.
+    #[serde(default = "creation_date_utc_default")]
+    pub creation_date_utc: String,
     /// ISO8601 formatted date-time string of the expiration timestamp if one exists for this file.
     pub expires_at_utc: Option<String>,
+}
+
+fn creation_date_utc_default() -> String {
+    "info not available".to_string()
 }
 
 /// Wrapper around raw data and result.
@@ -307,20 +314,21 @@ impl<'a> Uploader<'a> {
         }
         writeln!(
             output,
-            "{:^filename_width$} | {:^filesize_width$} | {:^19}",
-            "Name", "Size", "Expiry (UTC)"
+            "{:^filename_width$} | {:^filesize_width$} | {:^19} | {:^19}",
+            "Name", "Size", "Creation (UTC)", "Expiry (UTC)"
         )?;
         writeln!(
             output,
-            "{:-<filename_width$}-|-{:->filesize_width$}-|--------------------",
-            "", ""
+            "{:-<filename_width$}-|-{:->filesize_width$}-|-{:-<19}-|-{:-<19}",
+            "", "", "", ""
         )?;
         items.iter().try_for_each(|file_info| {
             writeln!(
                 output,
-                "{:<filename_width$} | {:>filesize_width$} | {}",
+                "{:<filename_width$} | {:>filesize_width$} | {:<19} | {}",
                 file_info.file_name,
                 file_info.file_size,
+                file_info.creation_date_utc,
                 file_info
                     .expires_at_utc
                     .as_ref()
