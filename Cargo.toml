@@ -22,16 +22,16 @@ use-native-certs = ["ureq/native-certs"]
 
 [dependencies]
 serde = { version = "1.0.203", default-features = false, features = ["derive"] }
-toml = "0.8.12"
+toml = "0.8.14"
 dirs-next = "2.0.0"
-thiserror = "1.0.58"
+thiserror = "1.0.61"
 getopts = "0.2.21"
-ureq = { version = "2.9.6", features = ["json"] }
+ureq = { version = "2.9.7", features = ["json"] }
 multipart = { version = "0.18.0", default-features = false, features = [
   "client",
 ] }
 colored = "2.1.0"
-url = "2.5.0"
+url = "2.5.1"
 indicatif = "0.17.8"
 
 [profile.release]
