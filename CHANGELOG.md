@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.1] - 2024-08-01
+
+### Added
+
+- Show creation date in list output by @tessus in [#117](https://github.com/orhun/rustypaste-cli/pull/117)
+
+See the latest rustypaste server release ([0.15.1](https://github.com/orhun/rustypaste/releases/tag/v0.15.1)) for more information.
+
+- Add @tessus as a maintainer
+
+### Changed
+
+- Update license copyright years by @orhun
+- Bump dependencies
+
 ## [0.9.0] - 2024-03-27
 
 ### Added
