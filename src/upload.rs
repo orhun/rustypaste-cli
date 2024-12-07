@@ -69,7 +69,7 @@ impl<'a, R: Read> UploadTracker<'a, R> {
     }
 }
 
-impl<'a, R: Read> Read for UploadTracker<'a, R> {
+impl<R: Read> Read for UploadTracker<'_, R> {
     fn read(&mut self, buf: &mut [u8]) -> IoResult<usize> {
         let bytes_read = self.inner.read(buf)?;
         self.uploaded += bytes_read;
