@@ -77,7 +77,23 @@ Either set the credentials on the command line (not recommended):
 rpaste -s "https://paste.example.com" -a "<token>"
 ```
 
-or specify them in the [configuration file](#configuration).
+or specify them in the [configuration file](#configuration) as follows:
+
+```toml
+[server]
+auth_token = "<token>"
+delete_token = "<delete_token>"
+```
+
+It is also possible to use these tokens from a file:
+
+```toml
+[server]
+auth_token_file = "~/example/auth-token"
+delete_token_file = "~/example/delete-token"
+```
+
+The contents should be only the token, all whitespace will be trimmed.
 
 ### Upload files
 

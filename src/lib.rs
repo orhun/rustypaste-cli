@@ -43,6 +43,7 @@ pub fn run(args: Args) -> Result<()> {
             }
         }
     }
+    config.parse_token_files();
     config.update_from_args(&args);
     if config.server.address.is_empty() {
         return Err(Error::NoServerAddressError);
