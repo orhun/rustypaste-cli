@@ -95,3 +95,31 @@ impl Config {
         };
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    /// Test that the token file is being properly processed.
+    fn test_parse_token_files_no_whitespace() {
+        let mut cfg = Config::default();
+        let token = "KBRRHMxlJfFo1".to_string();
+
+        cfg.server.auth_token_file = Some("tests/token_file_parsing/token.txt".to_string());
+        cfg.parse_token_files();
+        assert_eq!(cfg.server.auth_token, Some(token));
+    }
+
+    #[test]
+    /// Test that whitespace is being properly trimmed.
+    fn test_parse_token_files_whitespaced() {
+        let mut cfg = Config::default();
+        let token = "nhJuLuY5vxUrO".to_string();
+
+        cfg.server.auth_token_file =
+            Some("tests/token_file_parsing/token_whitespaced.txt".to_string());
+        cfg.parse_token_files();
+        assert_eq!(cfg.server.auth_token, Some(token));
+    }
+}
