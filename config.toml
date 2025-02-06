@@ -1,10 +1,18 @@
 [server]
 address = "https://paste.example.com"
-#auth_token = ""
-#delete_token = ""
+# Token used for creating and accessing files.
+auth_token = ""
+# Leading and trailing whitespace is trimmed, overrides delete_token if set.
+auth_token_file = "~/example/auth-token"
+# Token used for deleting files.
+delete_token = ""
+# Leading and trailing whitespace is trimmed, overrides delete_token if set.
+delete_token_file = "~/example/delete-token"
 
 [paste]
+# Delete the paste after it has been accessed for the first time.
 oneshot = false
+# Override the server's default expiration time.
 #expire = "10min"
 
 [style]
