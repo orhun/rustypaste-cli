@@ -1,11 +1,21 @@
 [server]
+# Server address.
 address = "https://paste.example.com"
-#auth_token = ""
-#delete_token = ""
+# Server authentication token.
+auth_token = ""
+# A file that contains an authentication token.
+auth_token_file = "~/example/auth-token"
+# Server deletion token.
+delete_token = ""
+# A file that contains a deletion token.
+delete_token_file = "~/example/delete-token"
 
 [paste]
+# Delete the paste after it has been accessed for the first time.
 oneshot = false
+# Override the server's default expiration time.
 #expire = "10min"
 
 [style]
+# Prettify the output.
 prettify = false

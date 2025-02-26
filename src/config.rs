@@ -1,5 +1,6 @@
 use crate::args::Args;
 use serde::{Deserialize, Serialize};
+use std::fs;
 
 /// Configuration values.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -19,8 +20,16 @@ pub struct ServerConfig {
     pub address: String,
     /// Token for authentication.
     pub auth_token: Option<String>,
+    /// A file containing the token for authentication.
+    ///
+    /// Leading and trailing whitespace will be trimmed.
+    pub auth_token_file: Option<String>,
     /// Token for deleting files.
     pub delete_token: Option<String>,
+    /// A file containing the token for deleting files.
+    ///
+    /// Leading and trailing whitespace will be trimmed.
+    pub delete_token_file: Option<String>,
 }
 
 /// Paste configuration.
@@ -63,5 +72,54 @@ impl Config {
         if args.filename.is_some() {
             self.paste.filename = args.filename.as_ref().cloned();
         }
+    }
+
+    /// Parses the files referenced by [Config::auth_token_file] and [Config::delete_token_file].
+    ///
+    /// Updates the respective token variables with the contents of the files.
+    pub fn parse_token_files(&mut self) {
+        if let Some(path) = &self.server.auth_token_file {
+            let path = shellexpand::tilde(path).to_string();
+            match fs::read_to_string(path) {
+                Ok(token) => self.server.auth_token = Some(token.trim().to_string()),
+                Err(e) => eprintln!("Error while reading token file: {e}"),
+            };
+        };
+
+        if let Some(path) = &self.server.delete_token_file {
+            let path = shellexpand::tilde(path).to_string();
+            match fs::read_to_string(path) {
+                Ok(token) => self.server.delete_token = Some(token.trim().to_string()),
+                Err(e) => eprintln!("Error while reading token file: {e}"),
+            };
+        };
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    /// Test that the token file is being properly processed.
+    fn test_parse_token_files_no_whitespace() {
+        let mut cfg = Config::default();
+        let token = "KBRRHMxlJfFo1".to_string();
+
+        cfg.server.auth_token_file = Some("tests/token_file_parsing/token.txt".to_string());
+        cfg.parse_token_files();
+        assert_eq!(cfg.server.auth_token, Some(token));
+    }
+
+    #[test]
+    /// Test that whitespace is being properly trimmed.
+    fn test_parse_token_files_whitespaced() {
+        let mut cfg = Config::default();
+        let token = "nhJuLuY5vxUrO".to_string();
+
+        cfg.server.auth_token_file =
+            Some("tests/token_file_parsing/token_whitespaced.txt".to_string());
+        cfg.parse_token_files();
+        assert_eq!(cfg.server.auth_token, Some(token));
     }
 }
