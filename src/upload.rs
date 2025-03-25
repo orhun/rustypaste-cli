@@ -26,14 +26,9 @@ pub struct ListItem {
     /// Size of the file in bytes.
     pub file_size: u64,
     /// ISO8601 formatted date-time string of the creation timestamp.
-    #[serde(default = "creation_date_utc_default")]
-    pub creation_date_utc: String,
+    pub creation_date_utc: Option<String>,
     /// ISO8601 formatted date-time string of the expiration timestamp if one exists for this file.
     pub expires_at_utc: Option<String>,
-}
-
-fn creation_date_utc_default() -> String {
-    "info not available".to_string()
 }
 
 /// Wrapper around raw data and result.
@@ -328,12 +323,11 @@ impl<'a> Uploader<'a> {
                 "{:<filename_width$} | {:>filesize_width$} | {:<19} | {}",
                 file_info.file_name,
                 file_info.file_size,
-                file_info.creation_date_utc,
                 file_info
-                    .expires_at_utc
-                    .as_ref()
-                    .cloned()
-                    .unwrap_or_default()
+                    .creation_date_utc
+                    .as_deref()
+                    .unwrap_or("info not available"),
+                file_info.expires_at_utc.as_deref().unwrap_or_default()
             )
         })?;
         Ok(())
