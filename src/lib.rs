@@ -17,22 +17,12 @@ use crate::config::Config;
 use crate::error::{Error, Result};
 use crate::upload::Uploader;
 use colored::Colorize;
-use std::env;
 use std::fs;
 use std::io::IsTerminal;
 use std::io::{self, Read};
-use std::path::PathBuf;
 
 /// Default name of the configuration file.
 const CONFIG_FILE: &str = "config.toml";
-
-fn config_dir_helper() -> PathBuf {
-    let config_dir = env::var("XDG_CONFIG_HOME").map_or_else(
-        |_| dirs_next::home_dir().unwrap_or_default().join(".config"),
-        PathBuf::from,
-    );
-    config_dir.join("rustypaste")
-}
 
 /// Runs `rpaste`.
 pub fn run(args: Args) -> Result<()> {
@@ -42,7 +32,12 @@ pub fn run(args: Args) -> Result<()> {
     } else {
         for path in [
             dirs_next::home_dir().map(|p| p.join(".rustypaste").join(CONFIG_FILE)),
-            Some(config_dir_helper().join(CONFIG_FILE)),
+            #[cfg(target_os = "macos")]
+            Some(
+                config
+                    .determine_config_dir_on_macos_honoring_xdg_config_path()
+                    .join(CONFIG_FILE),
+            ),
             dirs_next::config_dir().map(|p| p.join("rustypaste").join(CONFIG_FILE)),
         ]
         .iter()
