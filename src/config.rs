@@ -97,12 +97,15 @@ impl Config {
         };
     }
 
-    // The dirs-next crate ignores the XDG_CONFIG_HOME env var on macOS and only considers
-    // `Library/Application Support` as the config dir, which is primarily used by GUI apps.
-    // This function determines the config path and honors the XDG_CONFIG_HOME env var.
-    // If it is not set, it will fall back to `~/.config`
+    /// Find a special config path on macOS.
+    /// 
+    /// The `dirs-next` crate ignores the `XDG_CONFIG_HOME` env var on macOS and only considers
+    /// `Library/Application Support` as the config dir, which is primarily used by GUI apps.
+    ///
+    /// This function determines the config path and honors the `XDG_CONFIG_HOME` env var.
+    /// If it is not set, it will fall back to `~/.config`
     #[cfg(target_os = "macos")]
-    pub(crate) fn determine_config_dir_on_macos_honoring_xdg_config_path(&self) -> PathBuf {
+    pub(crate) fn retrieve_xdg_config_on_macos(&self) -> PathBuf {
         let config_dir = env::var("XDG_CONFIG_HOME").map_or_else(
             |_| dirs_next::home_dir().unwrap_or_default().join(".config"),
             PathBuf::from,
