@@ -98,7 +98,7 @@ impl Config {
     }
 
     /// Find a special config path on macOS.
-    /// 
+    ///
     /// The `dirs-next` crate ignores the `XDG_CONFIG_HOME` env var on macOS and only considers
     /// `Library/Application Support` as the config dir, which is primarily used by GUI apps.
     ///

@@ -33,11 +33,7 @@ pub fn run(args: Args) -> Result<()> {
         for path in [
             dirs_next::home_dir().map(|p| p.join(".rustypaste").join(CONFIG_FILE)),
             #[cfg(target_os = "macos")]
-            Some(
-                config
-                    .determine_config_dir_on_macos_honoring_xdg_config_path()
-                    .join(CONFIG_FILE),
-            ),
+            Some(config.retrieve_xdg_config_on_macos().join(CONFIG_FILE)),
             dirs_next::config_dir().map(|p| p.join("rustypaste").join(CONFIG_FILE)),
         ]
         .iter()
