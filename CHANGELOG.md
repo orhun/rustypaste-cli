@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.4] - 2025-04-25
+
+### Added
+
+- Honor XDG_CONFIG_HOME on macOS by @tessus in [#185](https://github.com/orhun/rustypaste-cli/pull/185)
+
+### Fixed
+
+- No panic when creation_date_utc is null by @musl in [#182](https://github.com/orhun/rustypaste-cli/pull/182)
+
+### Changed
+
+- Bump dependencies
+
 ## [0.9.3] - 2025-03-13
 
 ### Added
