@@ -179,11 +179,11 @@ The configuration file can be specified via `--config` argument and `RPASTE_CONF
 
 `<config_dir>` depends on the platform as shown in the following table:
 
-| Platform | Value                                 | Example                                  |
-| -------- | ------------------------------------- | ---------------------------------------- |
-| Linux    | `$XDG_CONFIG_HOME` or `$HOME`/.config | /home/alice/.config                      |
-| macOS    | `$HOME`/Library/Application Support   | /Users/Alice/Library/Application Support |
-| Windows  | `{FOLDERID_RoamingAppData}`           | C:\Users\Alice\AppData\Roaming           |
+| Platform | Value                                                                            | Example                                                               |
+|----------|----------------------------------------------------------------------------------|-----------------------------------------------------------------------|
+| Linux    | • $XDG_CONFIG_HOME <br> • $HOME/.config                                          | /home/alice/.config                                                   |
+| macOS    | • $XDG_CONFIG_HOME <br> • $HOME/.config <br> • $HOME/Library/Application Support | • /home/alice/.config <br> • /Users/Alice/Library/Application Support |
+| Windows  | {FOLDERID_RoamingAppData}                                                        | C:\Users\Alice\AppData\Roaming                                        |
 
 See [config.toml](./config.toml) for configuration options.
 
