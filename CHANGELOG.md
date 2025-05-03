@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Honor XDG_CONFIG_HOME on macOS by @tessus in [#185](https://github.com/orhun/rustypaste-cli/pull/185)
+- Honor XDG_CONFIG_HOME on macOS (additionally search for the config file at the same locations as on Linux) by @tessus in [#185](https://github.com/orhun/rustypaste-cli/pull/185)
 
 ### Fixed
 
