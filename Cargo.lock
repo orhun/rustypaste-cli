@@ -682,7 +682,7 @@ dependencies = [
 
 [[package]]
 name = "rustypaste-cli"
-version = "0.9.3"
+version = "0.9.4"
 dependencies = [
  "colored",
  "dirs-next",
