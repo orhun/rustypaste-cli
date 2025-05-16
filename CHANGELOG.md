@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- No panic when creation_date_utc is null by @musl in [#182](https://github.com/orhun/rustypaste-cli/pull/182)
+- No panic when creation_date_utc is null by @kanna5 in [#182](https://github.com/orhun/rustypaste-cli/pull/182)
 
 ### Changed
 
