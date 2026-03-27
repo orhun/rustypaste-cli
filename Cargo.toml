@@ -23,7 +23,6 @@ use-native-certs = ["ureq/native-certs"]
 [dependencies]
 serde = { version = "1.0.228", default-features = false, features = ["derive"] }
 toml = "1.1.0"
-dirs-next = "2.0.0"
 thiserror = "2.0.18"
 getopts = "0.2.24"
 ureq = { version = "2.12.1", features = ["json"] }
@@ -34,6 +33,7 @@ colored = "3.1.1"
 url = "2.5.8"
 indicatif = "0.18.4"
 shellexpand = "3.1.2"
+etcetera = "0.11.0"
 
 [profile.release]
 opt-level = 3

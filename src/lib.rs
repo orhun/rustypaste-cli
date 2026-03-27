@@ -17,6 +17,7 @@ use crate::config::Config;
 use crate::error::{Error, Result};
 use crate::upload::Uploader;
 use colored::Colorize;
+use etcetera::BaseStrategy;
 use std::fs;
 use std::io::IsTerminal;
 use std::io::{self, Read};
@@ -30,14 +31,25 @@ pub fn run(args: Args) -> Result<()> {
     if let Some(ref config_path) = args.config {
         config = toml::from_str(&fs::read_to_string(config_path)?)?
     } else {
+        let strategy = etcetera::choose_base_strategy()
+            .expect("cannot determine current OS’s default strategy (layout)");
         for path in [
-            dirs_next::home_dir().map(|p| p.join(".rustypaste").join(CONFIG_FILE)),
+            strategy.config_dir().join("rustypaste").join(CONFIG_FILE),
+            // paths for backwards compatibility
+            #[cfg(target_family = "unix")]
+            strategy
+                .home_dir()
+                .to_path_buf()
+                .join(".rustypaste")
+                .join(CONFIG_FILE),
             #[cfg(target_os = "macos")]
-            Some(config.retrieve_xdg_config_on_macos().join(CONFIG_FILE)),
-            dirs_next::config_dir().map(|p| p.join("rustypaste").join(CONFIG_FILE)),
+            strategy
+                .home_dir()
+                .to_path_buf()
+                .join("Library/Application Support/rustypaste")
+                .join(CONFIG_FILE),
         ]
         .iter()
-        .filter_map(|v| v.as_ref())
         {
             if path.exists() {
                 config = toml::from_str(&fs::read_to_string(path)?)?;
