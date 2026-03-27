@@ -32,7 +32,7 @@ pub fn run(args: Args) -> Result<()> {
         config = toml::from_str(&fs::read_to_string(config_path)?)?
     } else {
         let strategy = etcetera::choose_base_strategy()
-            .expect("cannot determine current OS’s default strategy (layout)");
+            .expect("cannot determine current OS's default strategy (layout)");
         for path in [
             strategy.config_dir().join("rustypaste").join(CONFIG_FILE),
             // paths for backwards compatibility
