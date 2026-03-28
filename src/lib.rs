@@ -31,6 +31,7 @@ pub fn run(args: Args) -> Result<()> {
     if let Some(ref config_path) = args.config {
         config = toml::from_str(&fs::read_to_string(config_path)?)?
     } else {
+        // cannot panic - see https://github.com/lunacookies/etcetera/issues/42
         let strategy = etcetera::choose_base_strategy()
             .expect("cannot determine current OS's default strategy (layout)");
         for path in [
