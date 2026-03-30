@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.5] - 2026-03-30
+
+### Changed
+
+- Replace dirs_next with etcetera by @tessus in [#243](https://github.com/orhun/rustypaste-cli/pull/243)
+- Update dev gh handle by @tessus in [#190](https://github.com/orhun/rustypaste-cli/pull/190)
+- Bump dependencies
+
+[0.9.5]: https://github.com/orhun/rustypaste-cli/compare/v0.9.4...v0.9.5
+
 ## [0.9.4] - 2025-04-25
 
 ### Added
