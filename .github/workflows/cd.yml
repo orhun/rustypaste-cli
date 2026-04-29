@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set the release version
         shell: bash
@@ -88,7 +88,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
       - name: Publish
