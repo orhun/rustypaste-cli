@@ -24,11 +24,19 @@ pub struct ListItem {
     /// Uploaded file name.
     pub file_name: String,
     /// Size of the file in bytes.
-    pub file_size: u64,
+    pub file_size: Option<u64>,
+    /// Type of the item.
+    #[serde(default = "item_type_default")]
+    pub item_type: String,
     /// ISO8601 formatted date-time string of the creation timestamp.
     pub creation_date_utc: Option<String>,
     /// ISO8601 formatted date-time string of the expiration timestamp if one exists for this file.
     pub expires_at_utc: Option<String>,
+}
+
+// Needed for backwards compat with older servers that do not provide the item_type yet
+fn item_type_default() -> String {
+    "file".to_string()
 }
 
 /// Wrapper around raw data and result.
@@ -299,7 +307,7 @@ impl<'a> Uploader<'a> {
             .unwrap_or_default();
         let mut filesize_width = items
             .iter()
-            .map(|v| v.file_size)
+            .map(|v| v.file_size.unwrap_or_default())
             .max()
             .unwrap_or_default()
             .to_string()
@@ -307,22 +315,34 @@ impl<'a> Uploader<'a> {
         if filesize_width < 4 {
             filesize_width = 4;
         }
+        let mut itemtype_width = items
+            .iter()
+            .map(|v| v.item_type.len())
+            .max()
+            .unwrap_or_default();
+        if itemtype_width < 4 {
+            itemtype_width = 4;
+        }
         writeln!(
             output,
-            "{:^filename_width$} | {:^filesize_width$} | {:^19} | {:^19}",
-            "Name", "Size", "Creation (UTC)", "Expiry (UTC)"
+            "{:^filename_width$} | {:^filesize_width$} | {:^itemtype_width$} | {:^19} | {:^19}",
+            "Name", "Size", "Type", "Creation (UTC)", "Expiry (UTC)"
         )?;
         writeln!(
             output,
-            "{:-<filename_width$}-|-{:->filesize_width$}-|-{:-<19}-|-{:-<19}",
-            "", "", "", ""
+            "{:-<filename_width$}-|-{:->filesize_width$}-|-{:->itemtype_width$}-|-{:-<19}-|-{:-<19}",
+            "", "", "", "", ""
         )?;
         items.iter().try_for_each(|file_info| {
             writeln!(
                 output,
-                "{:<filename_width$} | {:>filesize_width$} | {:<19} | {}",
+                "{:<filename_width$} | {:>filesize_width$} | {:<itemtype_width$} | {:<19} | {}",
                 file_info.file_name,
-                file_info.file_size,
+                match file_info.file_size {
+                    Some(size) => size.to_string(),
+                    None => "n/a".to_string(),
+                },
+                file_info.item_type,
                 file_info
                     .creation_date_utc
                     .as_deref()
