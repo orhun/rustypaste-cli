@@ -25,9 +25,13 @@ use std::io::{self, Read};
 /// Default name of the configuration file.
 const CONFIG_FILE: &str = "config.toml";
 
-/// Explicit file args win over an implicit non-TTY stdin, so `rpaste file`
-/// under a Ctrl-Z-suspended TUI (inherited non-TTY pipe, no EOF) uploads the
-/// file instead of blocking `read_to_end` forever or sending an empty file.
+/// Returns `true` when input should be read from stdin.
+///
+/// An explicit `-` argument always selects stdin. Otherwise, stdin is used only
+/// when no file arguments are provided and stdin is not a TTY. This keeps
+/// explicit file uploads such as `rpaste file` from accidentally reading an
+/// inherited non-TTY stdin, which can block indefinitely in suspended or piped
+/// parent processes.
 fn should_read_stdin(files: &[String], stdin_is_tty: bool) -> bool {
     files.iter().any(|f| f == "-") || (files.is_empty() && !stdin_is_tty)
 }
