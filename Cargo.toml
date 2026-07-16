@@ -18,14 +18,15 @@ path = "src/main.rs"
 
 [features]
 default = []
-use-native-certs = ["ureq/native-certs"]
+use-native-certs = ["dep:rustls-native-certs"]
 
 [dependencies]
 serde = { version = "1.0.228", default-features = false, features = ["derive"] }
 toml = "1.1.2"
 thiserror = "2.0.18"
 getopts = "0.2.24"
-ureq = { version = "2.12.1", features = ["json"] }
+ureq = { version = "3.3.0", features = ["json"] }
+rustls-native-certs = { version = "0.8.4", optional = true }
 multipart = { version = "0.18.0", default-features = false, features = [
   "client",
 ] }
