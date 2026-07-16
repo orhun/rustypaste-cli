@@ -2,6 +2,7 @@ use crate::config::Config;
 use crate::error::{Error, Result};
 use indicatif::{ProgressBar, ProgressStyle};
 use multipart::client::lazy::Multipart;
+use secrecy::ExposeSecret;
 use serde::Deserialize;
 use std::io::{Read, Result as IoResult, Write};
 use std::time::Duration;
@@ -182,7 +183,7 @@ impl<'a> Uploader<'a> {
             request = request.header("Content-Length", content_len.to_string());
         }
         if let Some(auth_token) = &self.config.server.auth_token {
-            request = request.header("Authorization", auth_token);
+            request = request.header("Authorization", auth_token.expose_secret());
         }
         if let Some(expiration_time) = &self.config.paste.expire {
             request = request.header(EXPIRATION_HEADER, expiration_time);
@@ -241,7 +242,7 @@ impl<'a> Uploader<'a> {
             .http_status_as_error(false)
             .build();
         if let Some(delete_token) = &self.config.server.delete_token {
-            request = request.header("Authorization", delete_token);
+            request = request.header("Authorization", delete_token.expose_secret());
         }
         let result = match request.call() {
             Ok(response) => {
@@ -283,7 +284,7 @@ impl<'a> Uploader<'a> {
         let url = self.retrieve_url("version")?;
         let mut request = self.client.get(url.as_str());
         if let Some(auth_token) = &self.config.server.auth_token {
-            request = request.header("Authorization", auth_token);
+            request = request.header("Authorization", auth_token.expose_secret());
         }
         Ok(request.call()?.body_mut().read_to_string()?)
     }
@@ -293,7 +294,7 @@ impl<'a> Uploader<'a> {
         let url = self.retrieve_url("list")?;
         let mut request = self.client.get(url.as_str());
         if let Some(auth_token) = &self.config.server.auth_token {
-            request = request.header("Authorization", auth_token);
+            request = request.header("Authorization", auth_token.expose_secret());
         }
         let mut response = request.call()?;
         if !prettify {
@@ -374,6 +375,7 @@ mod tests {
     use super::*;
     use std::io::{Read, Write};
     use std::net::TcpListener;
+    use std::sync::mpsc::{self, Receiver};
     use std::thread::{self, JoinHandle};
 
     fn test_server(status: &str, body: &str) -> (String, JoinHandle<()>) {
@@ -427,6 +429,45 @@ mod tests {
         (address, handle)
     }
 
+    fn header_test_server(status: &str, body: &str) -> (String, Receiver<String>, JoinHandle<()>) {
+        let listener = TcpListener::bind("127.0.0.1:0").expect("test server should bind");
+        let address = format!(
+            "http://{}",
+            listener
+                .local_addr()
+                .expect("test server should have a local address")
+        );
+        let status = status.to_string();
+        let body = body.to_string();
+        let (request_tx, request_rx) = mpsc::channel();
+        let handle = thread::spawn(move || {
+            let (mut stream, _) = listener
+                .accept()
+                .expect("test server should accept a request");
+            let mut request = Vec::new();
+            let mut buffer = [0; 1024];
+            let headers = loop {
+                let bytes_read = stream
+                    .read(&mut buffer)
+                    .expect("test server should read request headers");
+                request.extend_from_slice(&buffer[..bytes_read]);
+                if let Some(header_end) = request.windows(4).position(|v| v == b"\r\n\r\n") {
+                    break String::from_utf8_lossy(&request[..header_end + 4]).into_owned();
+                }
+            };
+            request_tx
+                .send(headers)
+                .expect("test should receive request headers");
+            write!(
+                stream,
+                "HTTP/1.1 {status}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                body.len()
+            )
+            .expect("test server should write the response");
+        });
+        (address, request_rx, handle)
+    }
+
     fn config(address: String) -> Config {
         let mut config = Config::default();
         config.server.address = address;
@@ -467,6 +508,40 @@ mod tests {
         let result = Uploader::new(&config).retrieve_version();
 
         assert!(matches!(result, Err(Error::RequestError(_))));
+        server.join().expect("test server should stop cleanly");
+    }
+
+    #[test]
+    fn version_request_sends_auth_token() {
+        let (address, request, server) = header_test_server("200 OK", "0.15.0\n");
+        let mut config = config(address);
+        config.server.auth_token = Some("auth-secret".into());
+
+        let result = Uploader::new(&config).retrieve_version();
+
+        assert!(result.is_ok(), "{result:?}");
+        assert!(request
+            .recv()
+            .expect("test should receive request headers")
+            .to_ascii_lowercase()
+            .contains("authorization: auth-secret"));
+        server.join().expect("test server should stop cleanly");
+    }
+
+    #[test]
+    fn delete_sends_delete_token() {
+        let (address, request, server) = header_test_server("200 OK", "deleted\n");
+        let mut config = config(address);
+        config.server.delete_token = Some("delete-secret".into());
+
+        let result = Uploader::new(&config).delete_file("file").1;
+
+        assert!(result.is_ok(), "{result:?}");
+        assert!(request
+            .recv()
+            .expect("test should receive request headers")
+            .to_ascii_lowercase()
+            .contains("authorization: delete-secret"));
         server.join().expect("test server should stop cleanly");
     }
 }
