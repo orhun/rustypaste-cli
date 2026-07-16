@@ -11,7 +11,7 @@ pub enum Error {
     TomlError(#[from] toml::de::Error),
     /// Error that might occur while processing/sending requests.
     #[error("Request error: `{0}`")]
-    RequestError(#[from] Box<ureq::Error>),
+    RequestError(#[from] ureq::Error),
     /// Error that might occur while uploading files.
     #[error("Upload error: `{0}`")]
     UploadError(String),
