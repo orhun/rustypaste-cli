@@ -25,6 +25,17 @@ use std::io::{self, Read};
 /// Default name of the configuration file.
 const CONFIG_FILE: &str = "config.toml";
 
+/// Returns `true` when input should be read from stdin.
+///
+/// An explicit `-` argument always selects stdin. Otherwise, stdin is used only
+/// when no file arguments are provided and stdin is not a TTY. This keeps
+/// explicit file uploads such as `rpaste file` from accidentally reading an
+/// inherited non-TTY stdin, which can block indefinitely in suspended or piped
+/// parent processes.
+fn should_read_stdin(files: &[String], stdin_is_tty: bool) -> bool {
+    files.iter().any(|f| f == "-") || (files.is_empty() && !stdin_is_tty)
+}
+
 /// Runs `rpaste`.
 pub fn run(args: Args) -> Result<()> {
     let mut config = Config::default();
@@ -86,7 +97,7 @@ pub fn run(args: Args) -> Result<()> {
         results.push(uploader.upload_url(url));
     } else if let Some(ref remote_url) = args.remote {
         results.push(uploader.upload_remote_url(remote_url));
-    } else if !std::io::stdin().is_terminal() || args.files.contains(&String::from("-")) {
+    } else if should_read_stdin(&args.files, std::io::stdin().is_terminal()) {
         let mut buffer = Vec::new();
         let mut stdin = io::stdin();
         stdin.read_to_end(&mut buffer)?;
@@ -132,4 +143,34 @@ pub fn run(args: Args) -> Result<()> {
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::should_read_stdin;
+
+    fn files(v: &[&str]) -> Vec<String> {
+        v.iter().map(|s| s.to_string()).collect()
+    }
+
+    #[test]
+    fn explicit_file_wins_over_non_tty_stdin() {
+        assert!(!should_read_stdin(&files(&["f.html"]), false));
+    }
+
+    #[test]
+    fn dash_sentinel_always_reads_stdin() {
+        assert!(should_read_stdin(&files(&["-"]), true));
+        assert!(should_read_stdin(&files(&["-"]), false));
+    }
+
+    #[test]
+    fn bare_pipeline_reads_stdin() {
+        assert!(should_read_stdin(&files(&[]), false));
+    }
+
+    #[test]
+    fn interactive_no_files_does_not_read_stdin() {
+        assert!(!should_read_stdin(&files(&[]), true));
+    }
 }
