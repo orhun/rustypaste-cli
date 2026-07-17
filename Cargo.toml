@@ -22,6 +22,7 @@ use-native-certs = ["dep:rustls-native-certs"]
 
 [dependencies]
 serde = { version = "1.0.228", default-features = false, features = ["derive"] }
+secrecy = { version = "0.10.3", features = ["serde"] }
 toml = "1.1.2"
 thiserror = "2.0.18"
 getopts = "0.2.24"

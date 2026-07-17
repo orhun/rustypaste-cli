@@ -1,4 +1,5 @@
 use crate::args::Args;
+use secrecy::SecretString;
 use serde::{Deserialize, Serialize};
 use std::fs;
 
@@ -18,14 +19,16 @@ pub struct Config {
 pub struct ServerConfig {
     /// Server address.
     pub address: String,
-    /// Token for authentication.
-    pub auth_token: Option<String>,
+    /// Token for authentication, omitted when serializing the configuration.
+    #[serde(skip_serializing)]
+    pub auth_token: Option<SecretString>,
     /// A file containing the token for authentication.
     ///
     /// Leading and trailing whitespace will be trimmed.
     pub auth_token_file: Option<String>,
-    /// Token for deleting files.
-    pub delete_token: Option<String>,
+    /// Token for deleting files, omitted when serializing the configuration.
+    #[serde(skip_serializing)]
+    pub delete_token: Option<SecretString>,
     /// A file containing the token for deleting files.
     ///
     /// Leading and trailing whitespace will be trimmed.
@@ -81,7 +84,7 @@ impl Config {
         if let Some(path) = &self.server.auth_token_file {
             let path = shellexpand::tilde(path).to_string();
             match fs::read_to_string(path) {
-                Ok(token) => self.server.auth_token = Some(token.trim().to_string()),
+                Ok(token) => self.server.auth_token = Some(token.trim().into()),
                 Err(e) => eprintln!("Error while reading token file: {e}"),
             };
         };
@@ -89,7 +92,7 @@ impl Config {
         if let Some(path) = &self.server.delete_token_file {
             let path = shellexpand::tilde(path).to_string();
             match fs::read_to_string(path) {
-                Ok(token) => self.server.delete_token = Some(token.trim().to_string()),
+                Ok(token) => self.server.delete_token = Some(token.trim().into()),
                 Err(e) => eprintln!("Error while reading token file: {e}"),
             };
         };
@@ -99,6 +102,31 @@ impl Config {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use secrecy::ExposeSecret;
+
+    #[test]
+    fn debug_masks_and_serialization_omits_tokens() {
+        let cfg: Config = toml::from_str(
+            r#"
+                [server]
+                address = "https://paste.example.com"
+                auth_token = "auth-secret"
+                delete_token = "delete-secret"
+
+                [paste]
+            "#,
+        )
+        .expect("configuration should deserialize");
+
+        let debug = format!("{cfg:?}");
+        let serialized = toml::to_string(&cfg).expect("configuration should serialize");
+
+        for token in ["auth-secret", "delete-secret"] {
+            assert!(!debug.contains(token));
+            assert!(!serialized.contains(token));
+        }
+        assert!(debug.contains("[REDACTED]"));
+    }
 
     #[test]
     /// Test that the token file is being properly processed.
@@ -108,7 +136,13 @@ mod tests {
 
         cfg.server.auth_token_file = Some("tests/token_file_parsing/token.txt".to_string());
         cfg.parse_token_files();
-        assert_eq!(cfg.server.auth_token, Some(token));
+        assert_eq!(
+            cfg.server
+                .auth_token
+                .as_ref()
+                .map(|token| token.expose_secret()),
+            Some(token.as_str())
+        );
     }
 
     #[test]
@@ -120,6 +154,12 @@ mod tests {
         cfg.server.auth_token_file =
             Some("tests/token_file_parsing/token_whitespaced.txt".to_string());
         cfg.parse_token_files();
-        assert_eq!(cfg.server.auth_token, Some(token));
+        assert_eq!(
+            cfg.server
+                .auth_token
+                .as_ref()
+                .map(|token| token.expose_secret()),
+            Some(token.as_str())
+        );
     }
 }

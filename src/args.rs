@@ -1,4 +1,5 @@
 use getopts::Options;
+use secrecy::SecretString;
 use std::env;
 use std::io::IsTerminal;
 use std::path::PathBuf;
@@ -12,7 +13,7 @@ pub struct Args {
     /// Server address.
     pub server: Option<String>,
     /// Authentication or delete token.
-    pub auth: Option<String>,
+    pub auth: Option<SecretString>,
     /// URL to shorten.
     pub url: Option<String>,
     /// Remote URL to download file.
@@ -115,7 +116,7 @@ impl Args {
                 .or_else(|| matches.opt_str("c"))
                 .map(PathBuf::from),
             server: matches.opt_str("s"),
-            auth: matches.opt_str("a"),
+            auth: matches.opt_str("a").map(Into::into),
             url: matches.opt_str("u"),
             remote: matches.opt_str("r"),
             oneshot: matches.opt_present("o"),
@@ -127,5 +128,23 @@ impl Args {
             filename: matches.opt_str("n"),
             files: matches.free,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn debug_output_masks_auth_token() {
+        let args = Args {
+            auth: Some("cli-secret".into()),
+            ..Args::default()
+        };
+
+        let debug = format!("{args:?}");
+
+        assert!(!debug.contains("cli-secret"));
+        assert!(debug.contains("[REDACTED]"));
     }
 }

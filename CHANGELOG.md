@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Upgrade ureq to 3.3.0
+- Store authentication and deletion tokens as masked secrets
 
 ## [0.9.5] - 2026-03-30
 
