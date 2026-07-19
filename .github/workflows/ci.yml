@@ -20,20 +20,13 @@ jobs:
         config:
           - { OS: ubuntu-latest, TARGET: "x86_64-unknown-linux-gnu" }
           - { OS: ubuntu-latest, TARGET: "x86_64-unknown-linux-musl" }
-          - { OS: ubuntu-latest, TARGET: "i686-unknown-linux-gnu" }
-          - { OS: ubuntu-latest, TARGET: "i686-unknown-linux-musl" }
-          # - { OS: ubuntu-latest, TARGET: "armv5te-unknown-linux-gnueabi" }
-          - {
-              OS: ubuntu-latest,
-              TARGET: "armv7-unknown-linux-gnueabihf"
-            }
+          - { OS: ubuntu-latest, TARGET: "armv7-unknown-linux-gnueabihf" }
           - { OS: ubuntu-latest, TARGET: "aarch64-unknown-linux-gnu" }
           - { OS: ubuntu-latest, TARGET: "aarch64-unknown-linux-musl" }
           - { OS: ubuntu-latest, TARGET: "x86_64-pc-windows-gnu" }
           - { OS: macos-latest, TARGET: "x86_64-apple-darwin" }
           - { OS: macos-latest, TARGET: "aarch64-apple-darwin" }
           - { OS: windows-latest, TARGET: "x86_64-pc-windows-msvc" }
-          - { OS: windows-latest, TARGET: "i686-pc-windows-msvc" }
         TOOLCHAIN: [ stable ]
         BUILD_ARGS: [ "", "--features use-native-certs" ]
 
