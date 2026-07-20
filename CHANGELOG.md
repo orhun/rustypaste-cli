@@ -5,12 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.10.0] - 2026-07-16
+
+### Added
+- Support item_type in pretty list output
 
 ### Changed
-
 - Upgrade ureq to 3.3.0
 - Store authentication and deletion tokens as masked secrets
+- Mergify queue: set merge_method to squash
+- Bump dependencies
+
+### Fixed
+- Prefer explicit file args over implicit non-TTY stdin
 
 ## [0.9.5] - 2026-03-30
 
