@@ -213,14 +213,10 @@ impl<'a> Uploader<'a> {
                         response_text.trim(),
                         status.as_u16()
                     )))
-                } else if !self.config.paste.protected.unwrap_or(false)
-                    && response_text.lines().count() != 1
-                {
-                    Err(Error::UploadError(format!(
-                        "server returned invalid body (status code: {status})"
-                    )))
-                } else if self.config.paste.protected.unwrap_or(false)
-                    && response_text.lines().count() != 2
+                } else if (!self.config.paste.protected.unwrap_or(false)
+                    && response_text.lines().count() != 1)
+                    || (self.config.paste.protected.unwrap_or(false)
+                        && response_text.lines().count() != 2)
                 {
                     Err(Error::UploadError(format!(
                         "server returned invalid body (status code: {status})"
