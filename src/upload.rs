@@ -113,6 +113,8 @@ impl<'a> Uploader<'a> {
     pub fn upload_file(&self, file: &'a str) -> UploadResult<'a, String> {
         let field = if self.config.paste.oneshot == Some(true) {
             "oneshot"
+        } else if self.config.paste.protected == Some(true) {
+            "protected"
         } else {
             "file"
         };
@@ -154,6 +156,8 @@ impl<'a> Uploader<'a> {
     pub fn upload_stream<S: Read>(&self, stream: S) -> UploadResult<'a, String> {
         let field = if self.config.paste.oneshot == Some(true) {
             "oneshot"
+        } else if self.config.paste.protected == Some(true) {
+            "protected"
         } else {
             "file"
         };
@@ -209,12 +213,28 @@ impl<'a> Uploader<'a> {
                         response_text.trim(),
                         status.as_u16()
                     )))
-                } else if response_text.lines().count() != 1 {
+                } else if !self.config.paste.protected.unwrap_or(false)
+                    && response_text.lines().count() != 1
+                {
+                    Err(Error::UploadError(format!(
+                        "server returned invalid body (status code: {status})"
+                    )))
+                } else if self.config.paste.protected.unwrap_or(false)
+                    && response_text.lines().count() != 2
+                {
                     Err(Error::UploadError(format!(
                         "server returned invalid body (status code: {status})"
                     )))
                 } else if status.as_u16() == 200 {
-                    Ok(response_text)
+                    let final_result = if response_text.lines().count() == 2 {
+                        response_text
+                            .split_once('\n')
+                            .map(|(first, second)| format!("{first} ({})", second.trim()))
+                            .unwrap_or(response_text)
+                    } else {
+                        response_text
+                    };
+                    Ok(final_result)
                 } else {
                     Err(Error::UploadError(format!(
                         "unknown error (status code: {status})"

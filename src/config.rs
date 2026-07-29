@@ -40,6 +40,8 @@ pub struct ServerConfig {
 pub struct PasteConfig {
     /// Whether if the file will disappear after being viewed once.
     pub oneshot: Option<bool>,
+    /// Whether the file will be protected with a random password.
+    pub protected: Option<bool>,
     /// Expiration time for the link.
     pub expire: Option<String>,
     /// Filename.
@@ -68,6 +70,9 @@ impl Config {
         }
         if args.oneshot {
             self.paste.oneshot = Some(true);
+        }
+        if args.protected {
+            self.paste.protected = Some(true);
         }
         if args.expire.is_some() {
             self.paste.expire = args.expire.as_ref().cloned();
