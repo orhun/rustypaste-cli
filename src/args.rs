@@ -20,6 +20,8 @@ pub struct Args {
     pub remote: Option<String>,
     /// Files to upload.
     pub files: Vec<String>,
+    /// Whether the file will be protected with a random password.
+    pub protected: bool,
     /// Whether if the file will disappear after being viewed once.
     pub oneshot: bool,
     /// Expiration time for the link.
@@ -45,6 +47,7 @@ impl Args {
         opts.optflag("V", "server-version", "retrieves the server version");
         opts.optflag("l", "list", "lists files on the server");
         opts.optflag("d", "delete", "delete files from server");
+        opts.optflag("P", "protected", "upload a protected file");
         opts.optflag("o", "oneshot", "generates one shot links");
         opts.optflag("p", "pretty", "prettifies the output");
         opts.optopt("c", "config", "sets the configuration file", "CONFIG");
@@ -119,6 +122,7 @@ impl Args {
             auth: matches.opt_str("a").map(Into::into),
             url: matches.opt_str("u"),
             remote: matches.opt_str("r"),
+            protected: matches.opt_present("P"),
             oneshot: matches.opt_present("o"),
             expire: matches.opt_str("e"),
             prettify: matches.opt_present("p"),

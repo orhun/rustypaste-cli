@@ -58,6 +58,7 @@ cargo build --release
 -V, --server-version retrieves the server version
 -l, --list           lists files on the server
 -d, --delete         delete files from server
+-P, --protected      upload a protected file
 -o, --oneshot        generates one shot links
 -p, --pretty         prettifies the output
 -c, --config CONFIG  sets the configuration file
