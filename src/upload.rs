@@ -307,7 +307,12 @@ impl<'a> Uploader<'a> {
 
     /// Retrieves and prints the files on server.
     pub fn retrieve_list<Output: Write>(&self, output: &mut Output) -> Result<()> {
-        let url = self.retrieve_url("list")?;
+        let mut url = self.retrieve_url("list")?;
+        if let Some(list_encoded) = self.config.server.list_filenames_encoded {
+            if list_encoded {
+                url = self.retrieve_url("list?encoded")?;
+            }
+        }
         let mut request = self.client.get(url.as_str());
         if let Some(auth_token) = &self.config.server.auth_token {
             request = request.header("Authorization", auth_token.expose_secret());

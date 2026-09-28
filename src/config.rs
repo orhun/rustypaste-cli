@@ -33,6 +33,8 @@ pub struct ServerConfig {
     ///
     /// Leading and trailing whitespace will be trimmed.
     pub delete_token_file: Option<String>,
+    /// Enable URL encoding for the /list endpoint.
+    pub list_filenames_encoded: Option<bool>,
 }
 
 /// Paste configuration.
@@ -84,6 +86,9 @@ impl Config {
             self.style = Some(StyleConfig {
                 prettify: Some(true),
             });
+        }
+        if args.list_filenames_encoded {
+            self.server.list_filenames_encoded = Some(true);
         }
     }
 
