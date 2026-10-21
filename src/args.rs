@@ -32,6 +32,8 @@ pub struct Args {
     pub print_server_version: bool,
     /// List files on the server (file name, file size, expiry timestamp).
     pub list_files: bool,
+    /// Enable URL encoding for files in the listing.
+    pub list_filenames_encoded: bool,
     /// Delete files from server.
     pub delete: bool,
     /// Send filename header (give uploaded file a specific name).
@@ -46,6 +48,11 @@ impl Args {
         opts.optflag("v", "version", "prints version information");
         opts.optflag("V", "server-version", "retrieves the server version");
         opts.optflag("l", "list", "lists files on the server");
+        opts.optflag(
+            "U",
+            "url-encode",
+            "enable URL encoding for files in the listing",
+        );
         opts.optflag("d", "delete", "delete files from server");
         opts.optflag("P", "protected", "upload a protected file");
         opts.optflag("o", "oneshot", "generates one shot links");
@@ -88,6 +95,7 @@ impl Args {
                 && !matches.opt_present("r")
                 && !matches.opt_present("V")
                 && !matches.opt_present("l")
+                && !matches.opt_present("U")
                 && !matches.opt_present("d")
                 && !matches.opt_present("v")
                 && std::io::stdin().is_terminal())
@@ -128,6 +136,7 @@ impl Args {
             prettify: matches.opt_present("p"),
             print_server_version: matches.opt_present("V"),
             list_files: matches.opt_present("l"),
+            list_filenames_encoded: matches.opt_present("U"),
             delete: matches.opt_present("d"),
             filename: matches.opt_str("n"),
             files: matches.free,
