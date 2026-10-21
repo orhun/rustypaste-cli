@@ -26,7 +26,7 @@ secrecy = { version = "0.10.3", features = ["serde"] }
 toml = "1.1.2"
 thiserror = "2.0.18"
 getopts = "0.2.24"
-ureq = { version = "3.3.0", features = ["json"] }
+ureq = { version = "3.5.0", features = ["json"] }
 rustls-native-certs = { version = "0.8.4", optional = true }
 multipart = { version = "0.18.0", default-features = false, features = [
   "client",
