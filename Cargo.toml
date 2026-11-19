@@ -28,7 +28,7 @@ thiserror = "2.0.18"
 getopts = "0.2.24"
 ureq = { version = "3.5.0", features = ["json"] }
 rustls-native-certs = { version = "0.8.4", optional = true }
-multipart = { version = "0.18.0", default-features = false, features = [
+multipart = { package = "multipart_ng", version = "0.18.1", default-features = false, features = [
   "client",
 ] }
 colored = "3.1.1"
