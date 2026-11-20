@@ -13,7 +13,7 @@ pub mod error;
 pub mod upload;
 
 use crate::args::Args;
-use crate::config::Config;
+use crate::config::ConfigFile;
 use crate::error::{Error, Result};
 use crate::upload::Uploader;
 use colored::Colorize;
@@ -38,9 +38,9 @@ fn should_read_stdin(files: &[String], stdin_is_tty: bool) -> bool {
 
 /// Runs `rpaste`.
 pub fn run(args: Args) -> Result<()> {
-    let mut config = Config::default();
+    let mut config_file = ConfigFile::default();
     if let Some(ref config_path) = args.config {
-        config = toml::from_str(&fs::read_to_string(config_path)?)?
+        config_file = toml::from_str(&fs::read_to_string(config_path)?)?
     } else {
         // cannot panic - see https://github.com/lunacookies/etcetera/issues/42
         let strategy = etcetera::choose_base_strategy()
@@ -64,11 +64,12 @@ pub fn run(args: Args) -> Result<()> {
         .iter()
         {
             if path.exists() {
-                config = toml::from_str(&fs::read_to_string(path)?)?;
+                config_file = toml::from_str(&fs::read_to_string(path)?)?;
                 break;
             }
         }
     }
+    let mut config = config_file.select(args.profile.as_deref())?;
     config.parse_token_files();
     config.update_from_args(&args);
     if config.server.address.is_empty() {

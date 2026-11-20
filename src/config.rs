@@ -1,14 +1,40 @@
 use crate::args::Args;
+use crate::error::{Error, Result};
 use secrecy::SecretString;
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 use std::fs;
+
+/// The top-level settings and any named alternatives in a configuration file.
+#[derive(Default, Deserialize)]
+pub(crate) struct ConfigFile {
+    default_profile: Option<String>,
+    #[serde(default)]
+    profile: BTreeMap<String, Config>,
+    #[serde(flatten)]
+    base: Config,
+}
+
+impl ConfigFile {
+    pub(crate) fn select(mut self, requested: Option<&str>) -> Result<Config> {
+        match requested.or(self.default_profile.as_deref()) {
+            Some(name) => self
+                .profile
+                .remove(name)
+                .ok_or_else(|| Error::UnknownProfile(name.to_owned())),
+            None => Ok(self.base),
+        }
+    }
+}
 
 /// Configuration values.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Config {
     /// Server configuration.
+    #[serde(default)]
     pub server: ServerConfig,
     /// Paste configuration.
+    #[serde(default)]
     pub paste: PasteConfig,
     /// Style configuration.
     pub style: Option<StyleConfig>,
@@ -118,6 +144,65 @@ impl Config {
 mod tests {
     use super::*;
     use secrecy::ExposeSecret;
+
+    const PROFILES: &str = r#"
+        default_profile = "work"
+        [server]
+        address = "https://legacy.example"
+        auth_token = "legacy-token"
+        [paste]
+        oneshot = true
+        [profile.work.server]
+        address = "https://work.example"
+        auth_token = "work-token"
+        [profile.local.server]
+        address = "http://localhost:8000"
+    "#;
+
+    #[test]
+    fn default_profile_can_be_overridden_without_inheriting_other_tokens() {
+        let file: ConfigFile = toml::from_str(PROFILES).expect("valid profiles");
+        let work = file.select(None).expect("configured default");
+        assert_eq!(work.server.address, "https://work.example");
+        assert_eq!(
+            work.server
+                .auth_token
+                .as_ref()
+                .map(|token| token.expose_secret()),
+            Some("work-token")
+        );
+        assert_eq!(work.paste.oneshot, None);
+
+        let file: ConfigFile = toml::from_str(PROFILES).expect("valid profiles");
+        let local = file.select(Some("local")).expect("explicit profile");
+        assert_eq!(local.server.address, "http://localhost:8000");
+        assert!(local.server.auth_token.is_none());
+    }
+
+    #[test]
+    fn falls_back_to_top_level_settings_without_a_default_profile() {
+        let source = r#"
+            [server]
+            address = "https://legacy.example"
+            [paste]
+            oneshot = true
+            [profile.local.server]
+            address = "http://localhost:8000"
+        "#;
+        let file: ConfigFile = toml::from_str(source).expect("valid profiles");
+        let base = file.select(None).expect("top-level settings");
+
+        assert_eq!(base.server.address, "https://legacy.example");
+        assert_eq!(base.paste.oneshot, Some(true));
+    }
+
+    #[test]
+    fn missing_profile_reports_its_name_even_with_top_level_settings() {
+        let file: ConfigFile = toml::from_str(PROFILES).expect("valid profiles");
+        assert!(
+            matches!(file.select(Some("absent")), Err(Error::UnknownProfile(name)) if name == "absent")
+        );
+    }
 
     #[test]
     fn debug_masks_and_serialization_omits_tokens() {
