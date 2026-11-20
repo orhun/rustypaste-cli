@@ -18,6 +18,9 @@ pub enum Error {
     /// Error that might occur while deleting files from server.
     #[error("Delete error: `{0}`")]
     DeleteError(String),
+    /// The requested configuration profile does not exist.
+    #[error("Unknown configuration profile: `{0}`")]
+    UnknownProfile(String),
     /// Error that might occur when no server address is provided.
     #[error("No rustypaste server address is given.")]
     NoServerAddressError,

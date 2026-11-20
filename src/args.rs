@@ -10,6 +10,8 @@ use std::process;
 pub struct Args {
     /// Configuration file.
     pub config: Option<PathBuf>,
+    /// Named configuration profile.
+    pub profile: Option<String>,
     /// Server address.
     pub server: Option<String>,
     /// Authentication or delete token.
@@ -58,6 +60,7 @@ impl Args {
         opts.optflag("o", "oneshot", "generates one shot links");
         opts.optflag("p", "pretty", "prettifies the output");
         opts.optopt("c", "config", "sets the configuration file", "CONFIG");
+        opts.optopt("", "profile", "selects a configuration profile", "NAME");
         opts.optopt(
             "s",
             "server",
@@ -126,6 +129,7 @@ impl Args {
                 .ok()
                 .or_else(|| matches.opt_str("c"))
                 .map(PathBuf::from),
+            profile: matches.opt_str("profile"),
             server: matches.opt_str("s"),
             auth: matches.opt_str("a").map(Into::into),
             url: matches.opt_str("u"),
