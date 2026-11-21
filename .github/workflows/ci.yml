@@ -43,11 +43,15 @@ jobs:
 
       - name: Cache Cargo dependencies
         uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.config.TARGET }}
 
       - name: Install cross
         uses: taiki-e/install-action@cross
 
       - name: Build
+        env:
+          CROSS_TARGET_X86_64_PC_WINDOWS_GNU_IMAGE: ghcr.io/cross-rs/x86_64-pc-windows-gnu@sha256:faf3c23e786ee681c32737331d76ef1a29d4c1d26f5c219ebd335a3f60d22629
         run: cross build --target ${{ matrix.config.TARGET }} ${{ matrix.BUILD_ARGS }}
 
       - name: Check formatting
