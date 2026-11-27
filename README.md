@@ -62,7 +62,7 @@ cargo build --release
 -o, --oneshot        generates one shot links
 -p, --pretty         prettifies the output
 -c, --config CONFIG  sets the configuration file
-    --profile NAME   selects a configuration profile
+-z, --profile NAME   selects a configuration profile
 -s, --server SERVER  sets the address of the rustypaste server
 -a, --auth TOKEN     sets the authentication or delete token
 -u, --url URL        sets the URL to shorten
@@ -193,7 +193,7 @@ See [config.toml](./config.toml) for configuration options.
 
 To switch servers, put each server’s settings under a named profile. Set
 `default_profile` at the top of the file to choose the profile used when
-`--profile` is omitted.
+`-z` / `--profile` is omitted.
 
 ```toml
 default_profile = "work"
@@ -210,7 +210,8 @@ oneshot = true
 ```
 
 `rpaste notes.txt` uses `work` in this example. Run
-`rpaste --profile local notes.txt` to upload to the local server instead.
+`rpaste -z local notes.txt` (or `rpaste --profile local notes.txt`) to upload
+to the local server instead.
 Each profile has its own server, paste, and style settings. With no default or
 explicit profile, rpaste uses the existing top-level sections. Command-line
 options such as `--server` and `--expire` override the selected settings.

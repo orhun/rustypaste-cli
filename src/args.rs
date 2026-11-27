@@ -43,8 +43,7 @@ pub struct Args {
 }
 
 impl Args {
-    /// Parses the command-line arguments.
-    pub fn parse() -> Self {
+    fn options() -> Options {
         let mut opts = Options::new();
         opts.optflag("h", "help", "prints help information");
         opts.optflag("v", "version", "prints version information");
@@ -60,7 +59,7 @@ impl Args {
         opts.optflag("o", "oneshot", "generates one shot links");
         opts.optflag("p", "pretty", "prettifies the output");
         opts.optopt("c", "config", "sets the configuration file", "CONFIG");
-        opts.optopt("", "profile", "selects a configuration profile", "NAME");
+        opts.optopt("z", "profile", "selects a configuration profile", "NAME");
         opts.optopt(
             "s",
             "server",
@@ -82,6 +81,12 @@ impl Args {
             "TIME",
         );
         opts.optopt("n", "filename", "sets and overrides the filename", "NAME");
+        opts
+    }
+
+    /// Parses the command-line arguments.
+    pub fn parse() -> Self {
+        let opts = Self::options();
 
         let env_args: Vec<String> = env::args().collect();
         let matches = match opts.parse(&env_args[1..]) {
@@ -129,7 +134,7 @@ impl Args {
                 .ok()
                 .or_else(|| matches.opt_str("c"))
                 .map(PathBuf::from),
-            profile: matches.opt_str("profile"),
+            profile: matches.opt_str("z"),
             server: matches.opt_str("s"),
             auth: matches.opt_str("a").map(Into::into),
             url: matches.opt_str("u"),
@@ -163,5 +168,27 @@ mod tests {
 
         assert!(!debug.contains("cli-secret"));
         assert!(debug.contains("[REDACTED]"));
+    }
+
+    #[test]
+    fn parses_profile_short_and_long_flags() {
+        let opts = Args::options();
+
+        let short = opts
+            .parse(["-z", "local", "notes.txt"])
+            .expect("short -z flag should parse");
+        assert_eq!(short.opt_str("z").as_deref(), Some("local"));
+        assert_eq!(short.opt_str("profile").as_deref(), Some("local"));
+        assert_eq!(short.free, vec!["notes.txt"]);
+
+        let long = opts
+            .parse(["--profile", "work", "notes.txt"])
+            .expect("long --profile flag should parse");
+        assert_eq!(long.opt_str("z").as_deref(), Some("work"));
+        assert_eq!(long.opt_str("profile").as_deref(), Some("work"));
+        assert_eq!(long.free, vec!["notes.txt"]);
+
+        let usage = opts.usage("");
+        assert!(usage.contains("-z, --profile NAME"));
     }
 }
