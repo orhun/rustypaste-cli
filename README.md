@@ -62,6 +62,7 @@ cargo build --release
 -o, --oneshot        generates one shot links
 -p, --pretty         prettifies the output
 -c, --config CONFIG  sets the configuration file
+-z, --profile NAME   selects a configuration profile
 -s, --server SERVER  sets the address of the rustypaste server
 -a, --auth TOKEN     sets the authentication or delete token
 -u, --url URL        sets the URL to shorten
@@ -187,6 +188,33 @@ The configuration file can be specified via `--config` argument and `RPASTE_CONF
 | Windows  | {FOLDERID_RoamingAppData}                                                        | C:\Users\Alice\AppData\Roaming                                        |
 
 See [config.toml](./config.toml) for configuration options.
+
+### Profiles
+
+To switch servers, put each server’s settings under a named profile. Set
+`default_profile` at the top of the file to choose the profile used when
+`-z` / `--profile` is omitted.
+
+```toml
+default_profile = "work"
+
+[profile.work.server]
+address = "https://paste.example.com"
+auth_token_file = "~/.config/rustypaste/work-token"
+
+[profile.local.server]
+address = "http://localhost:8000"
+
+[profile.local.paste]
+oneshot = true
+```
+
+`rpaste notes.txt` uses `work` in this example. Run
+`rpaste -z local notes.txt` (or `rpaste --profile local notes.txt`) to upload
+to the local server instead.
+Each profile has its own server, paste, and style settings. With no default or
+explicit profile, rpaste uses the existing top-level sections. Command-line
+options such as `--server` and `--expire` override the selected settings.
 
 ## Contributing
 

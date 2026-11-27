@@ -34,6 +34,9 @@ generates one shot links
 prettifies the output
 .HP
 \fB\-c\fR, \fB\-\-config\fR CONFIG sets the configuration file
+.TP
+\fB\-z\fR, \fB\-\-profile\fR NAME
+selects a configuration profile
 .HP
 \fB\-s\fR, \fB\-\-server\fR SERVER sets the address of the rustypaste server
 .TP
@@ -54,6 +57,11 @@ sets and overrides the filename
 
 .SH CONFIGURATION
 A TOML file can be used to configure rpaste settings.
+Each named profile has its own server, paste, and style sections, for example
+\fB[profile.work.server]\fP.
+Set \fBdefault_profile = "work"\fP at the top of the file to use that profile
+when \fB\-z\fP / \fB\-\-profile\fP is omitted.
+Without either setting, rpaste uses the top-level sections.
 .TP
 \fB[server]\fP
 .RS
